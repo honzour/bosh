@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Image Upload</string>
+    <string name="upload_photo">Upload photo</string>
+    <string name="no_gps">No access to GPS</string>
 </resources>
