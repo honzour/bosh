@@ -2,4 +2,8 @@
     <string name="app_name">Image Upload</string>
     <string name="upload_photo">Upload photo</string>
     <string name="no_gps">No access to GPS</string>
+    <string name="longitude">Longitude:</string>
+    <string name="latitude">Latitude:</string>
+    <string name="accuracy">Accuracy:</string>
+    <string name="unknown">unknown</string>
 </resources>
