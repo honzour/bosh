@@ -2,12 +2,18 @@ package cz.bosh.imageupload;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
 
 public class MainActivity extends Activity {
 
@@ -16,6 +22,7 @@ public class MainActivity extends Activity {
     private TextView mLongitude;
     private TextView mLatitude;
     private TextView mAccuracy;
+    private View mUploadButton;
 
 
     @Override
@@ -25,6 +32,14 @@ public class MainActivity extends Activity {
         mLongitude = (TextView) findViewById(R.id.activity_main_longitude);
         mLatitude = (TextView) findViewById(R.id.activity_main_latitude);
         mAccuracy = (TextView) findViewById(R.id.activity_main_accuracy);
+        mUploadButton = findViewById(R.id.activity_main_upload_button);
+
+        mUploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startCamera();
+            }
+        });
 
         mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         mlocListener = new LocationListener()
@@ -74,5 +89,20 @@ public class MainActivity extends Activity {
         {
             mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != 1)
+            return;
+        if (resultCode != RESULT_OK)
+            return;
+    }
+
+    private void startCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath());
+        startActivityForResult(intent, 1);
     }
 }
