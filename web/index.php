@@ -6,7 +6,7 @@
 <TR><TD colspan="5">obrázek</TD></TR>
 <?php 
 $db = mysql_connect("localhost", "root", "korinek");
-mysql_select_db("bosh",$db); 
+mysql_select_db("bosh",$db);
 
 if ($_GET["action"] == "delete") {
 	$id = mysql_escape_string($_GET["id"]);
