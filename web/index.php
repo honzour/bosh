@@ -4,25 +4,27 @@
 <TABLE border="3">
 <TR><TD>id</TD><TD>délka</TD><TD>šířka</TD><TD>přesnost</TD><TD>funkce</TD></TR>
 <TR><TD colspan="5">obrázek</TD></TR>
-<?php 
-$db = mysql_connect("localhost", "root", "korinek");
-mysql_select_db("bosh",$db);
+<?php
+	include("db.php");
 
-if ($_GET["action"] == "delete") {
-	$id = mysql_escape_string($_GET["id"]);
+	$db = mysql_connect($db_host, $db_user, $db_password);
+	mysql_select_db($db_db, $db);
 
-	echo "DELETE FROM photos WHERE id = '" . $id . "'";
-	mysql_query("DELETE FROM photos WHERE id = '" . $id . "'", $db);
-}
+	if ($_GET["action"] == "delete") {
+		$id = mysql_escape_string($_GET["id"]);
 
-$result = mysql_query("SELECT id, lon, lat, acc, photo FROM photos",$db);
+		echo "DELETE FROM photos WHERE id = '" . $id . "'";
+		mysql_query("DELETE FROM photos WHERE id = '" . $id . "'", $db);
+	}
 
-while ($row = mysql_fetch_row($result)) {
-	echo("<TR><TD>" . $row[0] . "</TD><TD>" . $row[1] . "</TD><TD>" . $row[2] . "</TD><TD>" . $row[3] . "</TD><TD><A href=\"index.php?action=delete&amp;id=" . $row[0] ."\">smazat</A></TD></TR>\n");
-	echo("<TR><TD colspan=\"5\"><IMG src=\"data:image/png;base64,". base64_encode($row[4]) ."\"></TD></TR>\n");
-}
-mysql_free_result($result);
-mysql_close($db)
+	$result = mysql_query("SELECT id, lon, lat, acc, photo FROM photos",$db);
+
+	while ($row = mysql_fetch_row($result)) {
+		echo("<TR><TD>" . $row[0] . "</TD><TD>" . $row[1] . "</TD><TD>" . $row[2] . "</TD><TD>" . $row[3] . "</TD><TD><A href=\"index.php?action=delete&amp;id=" . $row[0] ."\">smazat</A></TD></TR>\n");
+		echo("<TR><TD colspan=\"5\"><IMG src=\"data:image/png;base64,". base64_encode($row[4]) ."\"></TD></TR>\n");
+	}
+	mysql_free_result($result);
+	mysql_close($db)
 
  ?>
 </TABLE>

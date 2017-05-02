@@ -3,10 +3,11 @@
 <BODY>
 
 <?php 
-	error_reporting(E_ERROR | E_WARNING | E_PARSE);
+	include "db.php";
+
 	if (isset($_POST["lon"])) {
-		$db = mysql_connect("localhost", "root", "korinek");
-		mysql_select_db("bosh",$db);
+		$db = mysql_connect($db_host, $db_user, $db_password);
+		mysql_select_db($db_db, $db);
 
 		$tmpName  = $_FILES['file']['tmp_name'];
 		$fp = fopen($tmpName, 'r');
@@ -20,6 +21,7 @@
 			"'" . mysql_escape_string($_POST["acc"]) .  "', " .
 			"'" . $data .  "'" .
 			")");
+		mysql_close($db);
 
 		?>
 <A HREF="index.php">Zpět</A>
