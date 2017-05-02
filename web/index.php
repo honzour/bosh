@@ -15,10 +15,11 @@ if ($_GET["action"] == "delete") {
 	mysql_query("DELETE FROM photos WHERE id = '" . $id . "'", $db);
 }
 
-$result = mysql_query("SELECT * FROM photos",$db);
+$result = mysql_query("SELECT id, lon, lat, acc, photo FROM photos",$db);
 
 while ($row = mysql_fetch_row($result)) {
-	echo("<TR><TD>" . $row[0] . "</TD><TD>" . $row[1] . "</TD><TD>" . $row[2] . "</TD><TD>" . $row[3] . "</TD><TD><A href=\"index.php?action=delete&amp;id=" . $row[0] ."\">smazat</A></TD></TR>");
+	echo("<TR><TD>" . $row[0] . "</TD><TD>" . $row[1] . "</TD><TD>" . $row[2] . "</TD><TD>" . $row[3] . "</TD><TD><A href=\"index.php?action=delete&amp;id=" . $row[0] ."\">smazat</A></TD></TR>\n");
+	echo("<TR><TD colspan=\"5\"><IMG src=\"data:image/png;base64,". base64_encode($row[4]) ."\"></TD></TR>\n");
 }
 mysql_free_result($result);
 mysql_close($db)
