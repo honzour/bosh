@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -104,7 +105,7 @@ public class MainActivity extends Activity {
 
         try {
             URL obj = new URL(url);
-            HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
             //add reuqest header
             con.setRequestMethod("POST");
@@ -152,9 +153,10 @@ public class MainActivity extends Activity {
 
     protected void postData() {
         Map<String, String> map = new HashMap<String, String>(2);
-        map.put("name", "honza");
-        map.put("email", "honza@honza.cz");
-        doPost("https://www.w3schools.com/php/welcome.php", map);
+        map.put("lon", "14");
+        map.put("lat", "50");
+        map.put("acc", "7");
+        doPost("http://backpropagation.wz.cz/bosh/add.php", map);
     }
 
     @Override

@@ -10,10 +10,9 @@
 	$db = mysql_connect($db_host, $db_user, $db_password);
 	mysql_select_db($db_db, $db);
 
-	if ($_GET["action"] == "delete") {
+	if (array_key_exists("action", $_GET) && $_GET["action"] == "delete") {
 		$id = mysql_escape_string($_GET["id"]);
 
-		echo "DELETE FROM photos WHERE id = '" . $id . "'";
 		mysql_query("DELETE FROM photos WHERE id = '" . $id . "'", $db);
 	}
 

@@ -5,22 +5,29 @@
 <?php 
 	include "db.php";
 
-	if (isset($_POST["lon"])) {
+	if (array_key_exists("lon", $_POST)) {
 		$db = mysql_connect($db_host, $db_user, $db_password);
 		mysql_select_db($db_db, $db);
 
-		$tmpName  = $_FILES['file']['tmp_name'];
-		$fp = fopen($tmpName, 'r');
-		$data = fread($fp, filesize($tmpName));
-		$data = mysql_escape_string($data);
-		fclose($fp);
+		if (array_key_exists('file', $_FILES) && strlen($tmpName = $_FILES['file']['tmp_name']) > 0	) {
 
-		mysql_query("INSERT INTO photos (lon, lat, acc, photo) VALUES (" . 
-			"'" . mysql_escape_string($_POST["lon"]) .  "', " .
-			"'" . mysql_escape_string($_POST["lat"]) .  "', " .
-			"'" . mysql_escape_string($_POST["acc"]) .  "', " .
-			"'" . $data .  "'" .
-			")");
+			$fp = fopen($tmpName, 'r');
+			$data = fread($fp, filesize($tmpName));
+			$data = mysql_escape_string($data);
+			fclose($fp);
+
+			mysql_query("INSERT INTO photos (lon, lat, acc, photo) VALUES (" . 
+				"'" . mysql_escape_string($_POST["lon"]) .  "', " .
+				"'" . mysql_escape_string($_POST["lat"]) .  "', " .
+				"'" . mysql_escape_string($_POST["acc"]) .  "', " .
+				"'" . $data .  "'" .
+				")");
+		} else {
+			mysql_query("INSERT INTO photos (lon, lat, acc) VALUES (" . 
+				"'" . mysql_escape_string($_POST["lon"]) .  "', " .
+				"'" . mysql_escape_string($_POST["lat"]) .  "', " .
+				"'" . mysql_escape_string($_POST["acc"]) . "')");
+		}
 		mysql_close($db);
 
 		?>
