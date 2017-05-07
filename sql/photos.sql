@@ -1,0 +1,67 @@
+-- phpMyAdmin SQL Dump
+-- version 4.3.12
+-- http://www.phpmyadmin.net
+--
+-- Host: 185.64.219.6:3306
+-- Generation Time: May 07, 2017 at 02:44 AM
+-- Server version: 5.5.37-MariaDB
+-- PHP Version: 5.6.30
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Database: `backpropagat0482`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `photos`
+--
+
+CREATE TABLE IF NOT EXISTS `photos` (
+  `id` int(11) NOT NULL,
+  `lon` double DEFAULT NULL,
+  `lat` double DEFAULT NULL,
+  `acc` double DEFAULT NULL,
+  `photo` longblob
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `photos`
+--
+
+INSERT INTO `photos` (`id`, `lon`, `lat`, `acc`, `photo`) VALUES
+(1, 14, 50, 10, 0x89504e470d0a1a0a0000000d4948445200000032000000320802000000915d1fe6000000097048597300000b1300000b1301009a9c180000000774494d4507e1050414371f506edccd0000001974455874436f6d6d656e74004372656174656420776974682047494d5057810e170000008b4944415458c3edd84d0e00110c86619a71ff035b980b5898af9594792d8578fca46dd43146c9d7aca46cb060c18205eb66d6a34f6d6dd2d97b08ab2aa97a0a0ac559bc69714c246b7d3d9fccb698dcb2d30384b675f5c008a7b0601dc5d2d29c9a1c2fb8c4af5b77d411b66b255f6d635b9e8bbbdeaafa8f4dbaea94b8050b162c58b060c18205eb4fac17b00c22574438e24b0000000049454e44ae426082),
+(2, 14, 50, 7, NULL),
+(4, 14, 50, 7, NULL);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `photos`
+--
+ALTER TABLE `photos`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `photos`
+--
+ALTER TABLE `photos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
