@@ -3,6 +3,7 @@ package cz.bosh.imageupload;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -55,8 +56,8 @@ public class MainActivity extends Activity {
         mUploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //startCamera();
-                postData();
+                startCamera();
+               // postData();
             }
         });
 
@@ -231,8 +232,30 @@ public class MainActivity extends Activity {
         map.put("acc", String.valueOf(acc));
       //  doPost("http://backpropagation.wz.cz/bosh/add.php", map);
 
-        
-        doPostWithImage("http://backpropagation.wz.cz/bosh/add.php", map, "/storage/sdcard1/DCIM/Camera/i.jpg");
+
+// Find the last picture
+        String[] projection = new String[]{
+                MediaStore.Images.ImageColumns._ID,
+                MediaStore.Images.ImageColumns.DATA,
+                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.ImageColumns.DATE_TAKEN,
+                MediaStore.Images.ImageColumns.MIME_TYPE
+        };
+        final Cursor cursor = ImageApplication.imageApplication.getContentResolver()
+                .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
+                        null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
+
+        String imageLocation = null;
+
+        // Put it in the image view
+        if (cursor.moveToFirst()) {
+
+            imageLocation = cursor.getString(1);
+            //File imageFile = new File(imageLocation);
+
+        }
+
+        doPostWithImage("http://backpropagation.wz.cz/bosh/add.php", map, imageLocation /*"/storage/sdcard1/DCIM/Camera/i.jpg"*/);
     }
 
     @Override
