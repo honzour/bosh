@@ -33,6 +33,9 @@ public class MainActivity extends Activity {
     private TextView mAccuracy;
     private View mUploadButton;
 
+    private static double lon = 0;
+    private static double lat = 0;
+    private static double acc = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +59,13 @@ public class MainActivity extends Activity {
         {
             @Override
             public void onLocationChanged(Location location) {
-                mLongitude.setText(String.valueOf(location.getLongitude()));
-                mLatitude.setText(String.valueOf(location.getLatitude()));
-                mAccuracy.setText(String.valueOf(location.getAccuracy()));
+                lon = location.getLongitude();
+                lat = location.getLatitude();
+                acc = location.getAccuracy();
 
+                mLongitude.setText(String.valueOf(lon));
+                mLatitude.setText(String.valueOf(lat));
+                mAccuracy.setText(String.valueOf(acc));
 
 
             }
@@ -153,9 +159,9 @@ public class MainActivity extends Activity {
 
     protected void postData() {
         Map<String, String> map = new HashMap<String, String>(2);
-        map.put("lon", "14");
-        map.put("lat", "50");
-        map.put("acc", "7");
+        map.put("lon", String.valueOf(lon));
+        map.put("lat", String.valueOf(lat));
+        map.put("acc", String.valueOf(acc));
         doPost("http://backpropagation.wz.cz/bosh/add.php", map);
     }
 
