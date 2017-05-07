@@ -23,10 +23,11 @@
 				"'" . $data .  "'" .
 				")");
 		} else {
-			mysql_query("INSERT INTO photos (lon, lat, acc) VALUES (" . 
+			$insertstring = "INSERT INTO photos (lon, lat, acc) VALUES (" . 
 				"'" . mysql_escape_string($_POST["lon"]) .  "', " .
 				"'" . mysql_escape_string($_POST["lat"]) .  "', " .
-				"'" . mysql_escape_string($_POST["acc"]) . "')");
+				"'" . mysql_escape_string($_POST["acc"]) . "')";
+			mysql_query($insertstring);
 		}
 		mysql_close($db);
 
