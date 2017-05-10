@@ -254,6 +254,7 @@ public class MainActivity extends Activity {
             //File imageFile = new File(imageLocation);
 
         }
+        cursor.close();
 
         doPostWithImage("http://backpropagation.wz.cz/bosh/add.php", map, imageLocation /*"/storage/sdcard1/DCIM/Camera/i.jpg"*/);
     }
