@@ -1,3 +1,12 @@
+<?php
+
+// TODO only in case of an error
+
+  $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+  header($protocol . ' ' . 406 . ' Not acceptable');
+
+?>
+
 <!DOCTYPE html>
 <HTML>
 <HEAD>
@@ -10,6 +19,7 @@
 	include "db.php";
 
 	if (array_key_exists("lon", $_POST)) {
+
 		$db = mysql_connect($db_host, $db_user, $db_password);
 		mysql_select_db($db_db, $db);
 
