@@ -1,5 +1,9 @@
+<!DOCTYPE html>
 <HTML>
-<HEAD><meta charset="utf-8"></HEAD>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<TITLE>Přidání obrázku</TITLE>
+</HEAD>
 <BODY>
 
 <?php 

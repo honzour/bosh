@@ -1,5 +1,9 @@
+ <!DOCTYPE HTML>
 <HTML>
-<HEAD><meta charset="utf-8"></HEAD>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<TITLE>Seznam obrázků</TITLE>
+</HEAD>
 <BODY>
 <TABLE border="3">
 <TR><TD>id</TD><TD>délka</TD><TD>šířka</TD><TD>přesnost</TD><TD>funkce</TD></TR>
@@ -20,7 +24,7 @@
 
 	while ($row = mysql_fetch_row($result)) {
 		echo("<TR><TD>" . $row[0] . "</TD><TD>" . $row[1] . "</TD><TD>" . $row[2] . "</TD><TD>" . $row[3] . "</TD><TD><A href=\"index.php?action=delete&amp;id=" . $row[0] ."\">smazat</A></TD></TR>\n");
-		echo("<TR><TD colspan=\"5\"><IMG src=\"data:image/png;base64,". base64_encode($row[4]) ."\"></TD></TR>\n");
+		echo("<TR><TD colspan=\"5\"><IMG src=\"data:image/png;base64,". base64_encode($row[4]) ."\" alt=\"fotka\"></TD></TR>\n");
 	}
 	mysql_free_result($result);
 	mysql_close($db)
