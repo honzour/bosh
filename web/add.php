@@ -2,43 +2,69 @@
 include("db.php");
 include("utils.php");
 
+	$title = "Přidání obrázku";
 
-// TODO only in case of an error
-
-	$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
-	header($protocol . ' ' . 406 . ' Not acceptable');
-
-	htmlHeader("Přidání obrázku");
+	function errorHeader($code, $desc) {
+		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+		header($protocol . ' ' . $code . ' ' . $desc);
+		die("Error $code, $desc");
+	}
 
 
 	if (array_key_exists("lon", $_POST)) {
 
 		$db = mysql_connect($db_host, $db_user, $db_password);
-		mysql_select_db($db_db, $db);
+
+		if (!db) {
+			errorHeader(500, "Cannot connect to the database");
+		}
+
+		if (!mysql_select_db($db_db, $db)) {
+			errorHeader(500, "Cannot select the database");
+		}
 
 		if (array_key_exists('file', $_FILES) && strlen($tmpName = $_FILES['file']['tmp_name']) > 0	) {
 
 			$fp = fopen($tmpName, 'r');
+			if (!fp) {
+				errorHeader(500, "Cannot open uploaded file");
+			}
+
 			$data = fread($fp, filesize($tmpName));
+			if (!data) {
+				errorHeader(406, "Empty uploaded file");
+			}
 			$data = mysql_escape_string($data);
 			fclose($fp);
 
-			mysql_query("INSERT INTO photos (lon, lat, acc, photo) VALUES (" . 
+			$r = mysql_query("INSERT INTO photos (lon, lat, acc, photo) VALUES (" . 
 				"'" . mysql_escape_string($_POST["lon"]) .  "', " .
 				"'" . mysql_escape_string($_POST["lat"]) .  "', " .
 				"'" . mysql_escape_string($_POST["acc"]) .  "', " .
 				"'" . $data .  "'" .
 				")");
+			if (!fp) {
+				errorHeader(500, "Cannot insert uploaded file into db");
+			}
+
+
 		} else {
+			errorHeader(406, "No uploaded file found");
+
+/*
 			$insertstring = "INSERT INTO photos (lon, lat, acc) VALUES (" . 
 				"'" . mysql_escape_string($_POST["lon"]) .  "', " .
 				"'" . mysql_escape_string($_POST["lat"]) .  "', " .
 				"'" . mysql_escape_string($_POST["acc"]) . "')";
 			mysql_query($insertstring);
+*/
 		}
 		mysql_close($db);
 
+		htmlHeader($title);
+
 		?>
+Fotka přidána.<BR>
 <A HREF="index.php">Zpět</A>
 		<?php
 	}
