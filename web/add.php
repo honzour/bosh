@@ -15,7 +15,7 @@ include("utils.php");
 
 		$db = mysql_connect($db_host, $db_user, $db_password);
 
-		if (!db) {
+		if (!$db) {
 			errorHeader(500, "Cannot connect to the database");
 		}
 
@@ -26,12 +26,12 @@ include("utils.php");
 		if (array_key_exists('file', $_FILES) && strlen($tmpName = $_FILES['file']['tmp_name']) > 0	) {
 
 			$fp = fopen($tmpName, 'r');
-			if (!fp) {
+			if (!$fp) {
 				errorHeader(500, "Cannot open uploaded file");
 			}
 
 			$data = fread($fp, filesize($tmpName));
-			if (!data) {
+			if (!$data) {
 				errorHeader(406, "Empty uploaded file");
 			}
 			$data = mysql_escape_string($data);
@@ -43,7 +43,7 @@ include("utils.php");
 				"'" . mysql_escape_string($_POST["acc"]) .  "', " .
 				"'" . $data .  "'" .
 				")");
-			if (!fp) {
+			if (!$r) {
 				errorHeader(500, "Cannot insert uploaded file into db");
 			}
 
@@ -69,6 +69,7 @@ Fotka přidána.<BR>
 		<?php
 	}
 	else {
+		htmlHeader($title);
 ?>
 <FORM action="add.php" method="post" enctype="multipart/form-data">
 <TABLE>
