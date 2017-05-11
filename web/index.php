@@ -1,15 +1,15 @@
- <!DOCTYPE HTML>
-<HTML>
-<HEAD>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<TITLE>Seznam obrázků</TITLE>
-</HEAD>
-<BODY>
+<?php
+include("db.php");
+include("utils.php");
+
+htmlHeader("Seznam obrázků");
+
+?>
 <TABLE border="3">
 <TR><TD>id</TD><TD>délka</TD><TD>šířka</TD><TD>přesnost</TD><TD>funkce</TD></TR>
 <TR><TD colspan="5">obrázek</TD></TR>
 <?php
-	include("db.php");
+	
 
 	$db = mysql_connect($db_host, $db_user, $db_password);
 	mysql_select_db($db_db, $db);

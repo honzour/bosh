@@ -1,22 +1,15 @@
 <?php
+include("db.php");
+include("utils.php");
+
 
 // TODO only in case of an error
 
-  $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
-  header($protocol . ' ' . 406 . ' Not acceptable');
+	$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+	header($protocol . ' ' . 406 . ' Not acceptable');
 
-?>
+	htmlHeader("Přidání obrázku");
 
-<!DOCTYPE html>
-<HTML>
-<HEAD>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<TITLE>Přidání obrázku</TITLE>
-</HEAD>
-<BODY>
-
-<?php 
-	include "db.php";
 
 	if (array_key_exists("lon", $_POST)) {
 
