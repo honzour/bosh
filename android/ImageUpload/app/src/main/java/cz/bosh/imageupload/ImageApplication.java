@@ -10,6 +10,7 @@ public class ImageApplication extends Application {
     public static Application imageApplication;
     public static MainActivity mainActivity = null;
     public static boolean isPostRunning = false;
+    public static String currentPhotoPath = null;
 
     @Override
     public void onCreate() {

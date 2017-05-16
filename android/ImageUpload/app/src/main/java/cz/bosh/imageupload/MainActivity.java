@@ -3,17 +3,22 @@ package cz.bosh.imageupload;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +37,9 @@ public class MainActivity extends Activity {
     private static double acc = 0;
 
     protected static final int RC_TAKE_PHOTO = 1;
+
+    private static final String JPEG_FILE_PREFIX = "IMG_";
+    private static final String JPEG_FILE_SUFFIX = ".jpg";
 
     protected void setThreadControls() {
         if (ImageApplication.isPostRunning) {
@@ -129,26 +137,9 @@ public class MainActivity extends Activity {
         map.put("lat", String.valueOf(lat));
         map.put("acc", String.valueOf(acc));
 
-        // Find the last picture
-        String[] projection = new String[]{
-                MediaStore.Images.ImageColumns.DATA,
-        };
-        final Cursor cursor = ImageApplication.imageApplication.getContentResolver()
-                .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
-                        null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
-
-        String imageLocation = null;
-
-        if (cursor.moveToFirst()) {
-
-            imageLocation = cursor.getString(0);
-
-        }
-        cursor.close();
-
         ImageApplication.isPostRunning = true;
         setThreadControls();
-        new PostThread("http://backpropagation.wz.cz/bosh/add.php", map, imageLocation).start();
+        new PostThread("http://backpropagation.wz.cz/bosh/add.php", map, ImageApplication.currentPhotoPath).start();
     }
 
     @Override
@@ -163,9 +154,58 @@ public class MainActivity extends Activity {
      //   ;
     }
 
+    private static File getAlbumDir() {
+        File storageDir = null;
+
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+
+            storageDir =  new File(
+                    Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_PICTURES
+                    ),
+                    "CameraBosh")            ;
+
+            if (storageDir != null) {
+                if (! storageDir.mkdirs()) {
+                    if (! storageDir.exists()){
+                        return null;
+                    }
+                }
+            }
+
+        } else {
+            return null;
+        }
+
+        return storageDir;
+    }
+
+    private static File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
+        File albumF = getAlbumDir();
+        File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
+        return imageF;
+    }
+
+    private static File setUpPhotoFile() throws IOException {
+
+        File f = createImageFile();
+        ImageApplication.currentPhotoPath = f.getAbsolutePath();
+
+        return f;
+    }
+
     protected void startCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath());
+        File file = null;
+        try {
+            file = setUpPhotoFile();
+        } catch (Exception e) {
+            Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+        }
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
         startActivityForResult(intent, RC_TAKE_PHOTO);
     }
 
