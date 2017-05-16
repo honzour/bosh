@@ -31,6 +31,8 @@ public class MainActivity extends Activity {
     private static double lat = 0;
     private static double acc = 0;
 
+    protected static final int RC_TAKE_PHOTO = 1;
+
     protected void setThreadControls() {
         if (ImageApplication.isPostRunning) {
             mProgressBar.setVisibility(View.VISIBLE);
@@ -129,11 +131,7 @@ public class MainActivity extends Activity {
 
         // Find the last picture
         String[] projection = new String[]{
-                MediaStore.Images.ImageColumns._ID,
                 MediaStore.Images.ImageColumns.DATA,
-                MediaStore.Images.ImageColumns.BUCKET_DISPLAY_NAME,
-                MediaStore.Images.ImageColumns.DATE_TAKEN,
-                MediaStore.Images.ImageColumns.MIME_TYPE
         };
         final Cursor cursor = ImageApplication.imageApplication.getContentResolver()
                 .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,
@@ -141,10 +139,9 @@ public class MainActivity extends Activity {
 
         String imageLocation = null;
 
-        // Put it in the image view
         if (cursor.moveToFirst()) {
 
-            imageLocation = cursor.getString(1);
+            imageLocation = cursor.getString(0);
 
         }
         cursor.close();
@@ -157,7 +154,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode != 1)
+        if (requestCode != RC_TAKE_PHOTO)
             return;
         if (resultCode != RESULT_OK)
             return;
@@ -169,7 +166,7 @@ public class MainActivity extends Activity {
     protected void startCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath());
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, RC_TAKE_PHOTO);
     }
 
     public void onPostFinished() {
