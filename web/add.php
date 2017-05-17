@@ -60,7 +60,7 @@ include("utils.php");
 					fclose($fp);
 					errorHeader(500, "Cannot insert into db " . mysql_error($db));
 				}
-				$id = mysql_insert_id($db);
+				$id = mysql_insert_id();
 				while (!feof($fp)) {
 					$data = fread($fp, $bufsize);
 					if (!$data) {
