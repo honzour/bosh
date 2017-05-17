@@ -16,11 +16,11 @@ include("utils.php");
 		$db = mysql_connect($db_host, $db_user, $db_password);
 
 		if (!$db) {
-			errorHeader(500, "Cannot connect to the database");
+			errorHeader(500, "Cannot connect to the database " . mysql_error());
 		}
 
 		if (!mysql_select_db($db_db, $db)) {
-			errorHeader(500, "Cannot select the database");
+			errorHeader(500, "Cannot select the database " . mysql_error($db));
 		}
 
 		if (array_key_exists('file', $_FILES) && strlen($tmpName = $_FILES['file']['tmp_name']) > 0	) {
@@ -44,7 +44,7 @@ include("utils.php");
 				"'" . $data .  "'" .
 				")");
 			if (!$r) {
-				errorHeader(500, "Cannot insert uploaded file into db");
+				errorHeader(500, "Cannot insert uploaded file into db " . mysql_error($db));
 			}
 
 
