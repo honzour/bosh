@@ -30,23 +30,55 @@ include("utils.php");
 				errorHeader(500, "Cannot open uploaded file");
 			}
 
-			$data = fread($fp, filesize($tmpName));
-			if (!$data) {
-				errorHeader(406, "Empty uploaded file");
-			}
-			$data = mysql_escape_string($data);
-			fclose($fp);
+			$filesize = filesize($tmpName);
+			$bufsize = 131072;
 
-			$r = mysql_query("INSERT INTO photos (lon, lat, acc, photo) VALUES (" . 
-				"'" . mysql_escape_string($_POST["lon"]) .  "', " .
-				"'" . mysql_escape_string($_POST["lat"]) .  "', " .
-				"'" . mysql_escape_string($_POST["acc"]) .  "', " .
-				"'" . $data .  "'" .
-				")");
-			if (!$r) {
-				errorHeader(500, "Cannot insert uploaded file into db " . mysql_error($db));
-			}
+			if ($filesize < $bufsize) {
 
+				$data = fread($fp, $filesize);
+				if (!$data) {
+					errorHeader(406, "Empty uploaded file");
+				}
+				$data = mysql_escape_string($data);
+				fclose($fp);
+
+				$r = mysql_query("INSERT INTO photos (lon, lat, acc, photo) VALUES (" . 
+					"'" . mysql_escape_string($_POST["lon"]) .  "', " .
+					"'" . mysql_escape_string($_POST["lat"]) .  "', " .
+					"'" . mysql_escape_string($_POST["acc"]) .  "', " .
+					"'" . $data .  "'" .
+					")");
+				if (!$r) {
+					errorHeader(500, "Cannot insert uploaded file into db " . mysql_error($db));
+				}
+			} else {
+				$r = mysql_query("INSERT INTO photos (lon, lat, acc, photo) VALUES (" . 
+					"'" . mysql_escape_string($_POST["lon"]) .  "', " .
+					"'" . mysql_escape_string($_POST["lat"]) .  "', " .
+					"'" . mysql_escape_string($_POST["acc"]) .  "', '')");
+				if (!$r) {
+					fclose($fp);
+					errorHeader(500, "Cannot insert into db " . mysql_error($db));
+				}
+				$id = mysql_insert_id($db);
+				while (!feof($fp)) {
+					$data = fread($fp, $bufsize);
+					if (!$data) {
+						fclose($fp);
+						mysql_query("DELETE FROM photos WHERE id = $id");
+						errorHeader(406, "Cannot read file");
+					}
+					$data = mysql_escape_string($data);
+					$r = mysql_query("UPDATE photos SET photo = CONCAT(photo, '$data') WHERE id = $id");
+					if (!$r) {
+						fclose($fp);
+						mysql_query("DELETE FROM photos WHERE id = $id");
+						errorHeader(500, "Cannot update into db " . mysql_error($db));
+					}
+						
+				}
+				fclose($fp);
+			}
 
 		} else {
 			errorHeader(406, "No uploaded file found");
