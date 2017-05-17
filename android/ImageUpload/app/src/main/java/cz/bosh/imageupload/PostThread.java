@@ -90,7 +90,9 @@ public class PostThread extends Thread {
             writer.append("--" + boundary + "--").append(CRLF).flush();
 
             int responseCode = ((HttpURLConnection) connection).getResponseCode();
-            return  ImageApplication.imageApplication.getResources().getText(R.string.server_response).toString() + String.valueOf(responseCode);
+            String responseMessage = ((HttpURLConnection) connection).getResponseMessage();
+
+            return  ImageApplication.imageApplication.getResources().getText(R.string.server_response).toString() + String.valueOf(responseCode) + " " + responseMessage ;
         } catch (Exception e) {
             return  e.toString();
         }
