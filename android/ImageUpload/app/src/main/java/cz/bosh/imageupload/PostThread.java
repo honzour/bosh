@@ -1,5 +1,7 @@
 package cz.bosh.imageupload;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.widget.Toast;
 
@@ -7,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -38,11 +41,60 @@ public class PostThread extends Thread {
         mHandler = new Handler();
     }
 
+    public int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
     protected String doPostWithImage() {
 
         try {
 
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+
+            final int maxWidth = 640;
+            final int maxHeight = 480;
+
+            BitmapFactory.decodeFile(mPathToImage, options);
+
+            if (options.outWidth > maxWidth || options.outHeight > maxHeight) {
+
+                options.inSampleSize = calculateInSampleSize(options, 640, 480);
+                options.inJustDecodeBounds = false;
+
+                Bitmap smaller_bm = BitmapFactory.decodeFile(mPathToImage, options);
+                new File(mPathToImage).delete();
+                File small_picture = new File(mPathToImage);
+                FileOutputStream fOut = new FileOutputStream(small_picture);
+
+                smaller_bm.compress(Bitmap.CompressFormat.JPEG, 80, fOut);
+                fOut.flush();
+                fOut.close();
+                smaller_bm.recycle();
+            }
+
             File binaryFile = new File(mPathToImage);
+
             String boundary = Long.toHexString(System.currentTimeMillis()); // Just generate some unique random value.
             String CRLF = "\r\n"; // Line separator required by multipart/form-data.
 
@@ -91,6 +143,7 @@ public class PostThread extends Thread {
 
             int responseCode = ((HttpURLConnection) connection).getResponseCode();
             String responseMessage = ((HttpURLConnection) connection).getResponseMessage();
+            new File(mPathToImage).delete();
 
             return  ImageApplication.imageApplication.getResources().getText(R.string.server_response).toString() + String.valueOf(responseCode) + " " + responseMessage ;
         } catch (Exception e) {
