@@ -14,6 +14,7 @@ include("utils.php");
 	if (array_key_exists("lon", $_POST)) {
 
 		$db = mysql_connect($db_host, $db_user, $db_password);
+        mysql_set_charset ("utf8", $db);
 
 		if (!$db) {
 			errorHeader(500, "Cannot connect to the database " . mysql_error());
@@ -48,20 +49,23 @@ include("utils.php");
 				$data = mysql_escape_string($data);
 				fclose($fp);
 
-				$r = mysql_query("INSERT INTO photos (lon, lat, acc, photo) VALUES (" . 
+				$r = mysql_query("INSERT INTO photos (lon, lat, acc, photo, note) VALUES (" . 
 					"'" . mysql_escape_string($_POST["lon"]) .  "', " .
 					"'" . mysql_escape_string($_POST["lat"]) .  "', " .
 					"'" . mysql_escape_string($_POST["acc"]) .  "', " .
 					"'" . $data .  "'" .
+					"'" . mysql_escape_string($_POST["note"]) .  "'" .
 					")");
 				if (!$r) {
 					errorHeader(500, "Cannot insert uploaded file into db " . mysql_error($db));
 				}
 			} else {
-				$r = mysql_query("INSERT INTO photos (lon, lat, acc, photo) VALUES (" . 
+				$r = mysql_query("INSERT INTO photos (lon, lat, acc, photo, note) VALUES (" . 
 					"'" . mysql_escape_string($_POST["lon"]) .  "', " .
 					"'" . mysql_escape_string($_POST["lat"]) .  "', " .
-					"'" . mysql_escape_string($_POST["acc"]) .  "', '')");
+					"'" . mysql_escape_string($_POST["acc"]) .  "', '', " .
+					"'" . mysql_escape_string($_POST["note"]) .  "'" .
+				")");
 				if (!$r) {
 					fclose($fp);
 					errorHeader(500, "Cannot insert into db " . mysql_error($db));
@@ -114,6 +118,7 @@ Fotka přidána.<BR>
 <TR><TD>Délka:</TD><TD><INPUT type="text" name="lon"></TD></TR>
 <TR><TD>Šířka:</TD><TD><INPUT type="text" name="lat"></TD></TR>
 <TR><TD>Přesnost:</TD><TD><INPUT type="text" name="acc"></TD></TR>
+<TR><TD>Poznámka:</TD><TD><INPUT type="text" name="note"></TD></TR>
 <TR><TD>Fotka:</TD><TD><INPUT type = "file" name="file"></TD></TR>
 </TABLE>
 <P>
