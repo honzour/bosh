@@ -53,7 +53,7 @@ include("utils.php");
 					"'" . mysql_escape_string($_POST["lon"]) .  "', " .
 					"'" . mysql_escape_string($_POST["lat"]) .  "', " .
 					"'" . mysql_escape_string($_POST["acc"]) .  "', " .
-					"'" . $data .  "'" .
+					"'" . $data .  "'," .
 					"'" . mysql_escape_string($_POST["note"]) .  "'" .
 					")");
 				if (!$r) {

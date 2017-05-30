@@ -29,6 +29,7 @@ public class MainActivity extends Activity {
     private TextView mLongitude;
     private TextView mLatitude;
     private TextView mAccuracy;
+    private TextView mNote;
     private View mUploadButton;
     private View mProgressBar;
 
@@ -59,6 +60,7 @@ public class MainActivity extends Activity {
         mLongitude = (TextView) findViewById(R.id.activity_main_longitude);
         mLatitude = (TextView) findViewById(R.id.activity_main_latitude);
         mAccuracy = (TextView) findViewById(R.id.activity_main_accuracy);
+        mNote = (TextView) findViewById(R.id.activity_main_note);
         mProgressBar = findViewById(R.id.activity_main_progress);
 
         mUploadButton = findViewById(R.id.activity_main_upload_button);
@@ -136,6 +138,7 @@ public class MainActivity extends Activity {
         map.put("lon", String.valueOf(lon));
         map.put("lat", String.valueOf(lat));
         map.put("acc", String.valueOf(acc));
+        map.put("note", mNote.getText().toString());
 
         ImageApplication.isPostRunning = true;
         setThreadControls();
@@ -151,7 +154,6 @@ public class MainActivity extends Activity {
             return;
         Toast.makeText(ImageApplication.imageApplication, R.string.sending_gps , Toast.LENGTH_LONG).show();
         prepareAndStartPost();
-     //   ;
     }
 
     private static File getAlbumDir() {
