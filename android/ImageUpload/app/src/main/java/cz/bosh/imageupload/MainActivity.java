@@ -12,14 +12,18 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends Activity {
@@ -32,6 +36,7 @@ public class MainActivity extends Activity {
     private TextView mNote;
     private View mUploadButton;
     private View mProgressBar;
+    private Spinner mShop;
 
     private static double lon = 0;
     private static double lat = 0;
@@ -62,6 +67,18 @@ public class MainActivity extends Activity {
         mAccuracy = (TextView) findViewById(R.id.activity_main_accuracy);
         mNote = (TextView) findViewById(R.id.activity_main_note);
         mProgressBar = findViewById(R.id.activity_main_progress);
+        mShop = (Spinner) findViewById(R.id.activity_main_shop);
+
+        List<String> list = new ArrayList<String>(3);
+        // TODO
+        list.add("Obchod 1");
+        list.add("Obchod 2");
+        list.add("Obchod 3");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, list);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mShop.setAdapter(adapter);
+
 
         mUploadButton = findViewById(R.id.activity_main_upload_button);
 
