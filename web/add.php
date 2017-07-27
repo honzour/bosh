@@ -49,22 +49,28 @@ include("utils.php");
 				$data = mysql_escape_string($data);
 				fclose($fp);
 
-				$r = mysql_query("INSERT INTO photos (lon, lat, acc, photo, note) VALUES (" . 
+				$r = mysql_query("INSERT INTO photos (lon, lat, acc, photo, note, note2, istourplan, isorder) VALUES (" . 
 					"'" . mysql_escape_string($_POST["lon"]) .  "', " .
 					"'" . mysql_escape_string($_POST["lat"]) .  "', " .
 					"'" . mysql_escape_string($_POST["acc"]) .  "', " .
 					"'" . $data .  "'," .
-					"'" . mysql_escape_string($_POST["note"]) .  "'" .
+					"'" . mysql_escape_string($_POST["note"]) .  "', " .
+					"'" . mysql_escape_string($_POST["note2"]) .  "', " .
+					"'" . (isset($_POST["istourplan"]) ? 1 : 0) .  "', " .
+					"'" . (isset($_POST["isorder"]) ? 1 : 0) .  "'" .
 					")");
 				if (!$r) {
 					errorHeader(500, "Cannot insert uploaded file into db " . mysql_error($db));
 				}
 			} else {
-				$r = mysql_query("INSERT INTO photos (lon, lat, acc, photo, note) VALUES (" . 
+				$r = mysql_query("INSERT INTO photos (lon, lat, acc, photo, note, note2, istourplan, isorder) VALUES (" . 
 					"'" . mysql_escape_string($_POST["lon"]) .  "', " .
 					"'" . mysql_escape_string($_POST["lat"]) .  "', " .
-					"'" . mysql_escape_string($_POST["acc"]) .  "', '', " .
-					"'" . mysql_escape_string($_POST["note"]) .  "'" .
+					"'" . mysql_escape_string($_POST["acc"]) .  "', '', " . // acc + photo
+					"'" . mysql_escape_string($_POST["note"]) .  "', " .
+					"'" . mysql_escape_string($_POST["note2"]) .  "', " .
+					"'" . (isset($_POST["istourplan"]) ? 1 : 0) .  "', " .
+					"'" . (isset($_POST["isorder"]) ? 1 : 0) .  "'" .
 				")");
 				if (!$r) {
 					fclose($fp);
@@ -93,13 +99,6 @@ include("utils.php");
 		} else {
 			errorHeader(406, "No uploaded file found");
 
-/*
-			$insertstring = "INSERT INTO photos (lon, lat, acc) VALUES (" . 
-				"'" . mysql_escape_string($_POST["lon"]) .  "', " .
-				"'" . mysql_escape_string($_POST["lat"]) .  "', " .
-				"'" . mysql_escape_string($_POST["acc"]) . "')";
-			mysql_query($insertstring);
-*/
 		}
 		mysql_close($db);
 
@@ -119,6 +118,9 @@ Fotka přidána.<BR>
 <TR><TD>Šířka:</TD><TD><INPUT type="text" name="lat"></TD></TR>
 <TR><TD>Přesnost:</TD><TD><INPUT type="text" name="acc"></TD></TR>
 <TR><TD>Poznámka:</TD><TD><INPUT type="text" name="note"></TD></TR>
+<TR><TD>Koment k promotérovi:</TD><TD><INPUT type="text" name="note2"></TD></TR>
+<TR><TD>Tourplán:</TD><TD><INPUT type="checkbox" name="istourplan" value="1"></TD></TR>
+<TR><TD>Objednávka:</TD><TD><INPUT type="checkbox" name="isorder" value="1"></TD></TR>
 <TR><TD>Fotka:</TD><TD><INPUT type = "file" name="file"></TD></TR>
 </TABLE>
 <P>

@@ -18,7 +18,7 @@ htmlHeader("Seznam obrázků");
 		mysql_query("DELETE FROM photos WHERE id = '" . $id . "'", $db);
 	}
 
-	$result = mysql_query("SELECT id, lon, lat, acc, photo, note FROM photos",$db);
+	$result = mysql_query("SELECT id, lon, lat, acc, photo, note, note2, istourplan, isorder FROM photos",$db);
 
 	while ($row = mysql_fetch_row($result)) {
 ?>
@@ -29,6 +29,9 @@ htmlHeader("Seznam obrázků");
         echo("šířka: " . $row[2] . "<BR>\n");
         echo("přesnost: " . $row[3] . "<BR><BR>\n");
         echo("poznámka: " . htmlspecialchars($row[5]) . "<BR><BR>\n");
+        echo("koment k promotérovi: " . htmlspecialchars($row[6]) . "<BR><BR>\n");
+        echo("tourplan: " . ($row[7] ? "ano" : "ne") . "<BR><BR>\n");
+        echo("objednávka: " . ($row[8] ? "ano" : "ne") . "<BR><BR>\n");
 		echo("<IMG src=\"data:image/png;base64,". base64_encode($row[4]) ."\" alt=\"fotka\"><BR>\n");
 		echo("<A href=\"index.php?action=delete&amp;id=" . $row[0] ."\">smazat</A>\n<BR><BR>");
 ?>
