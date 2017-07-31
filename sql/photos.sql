@@ -16,6 +16,56 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `brands`
+--
+
+DROP TABLE IF EXISTS `brands`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `brands` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `brands`
+--
+
+LOCK TABLES `brands` WRITE;
+/*!40000 ALTER TABLE `brands` DISABLE KEYS */;
+/*!40000 ALTER TABLE `brands` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `people`
+--
+
+DROP TABLE IF EXISTS `people`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `people` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `admin` tinyint(1) DEFAULT NULL,
+  `kam` tinyint(1) DEFAULT NULL,
+  `oz` tinyint(1) DEFAULT NULL,
+  `login` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `people`
+--
+
+LOCK TABLES `people` WRITE;
+/*!40000 ALTER TABLE `people` DISABLE KEYS */;
+/*!40000 ALTER TABLE `people` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `photos`
 --
 
@@ -30,10 +80,11 @@ CREATE TABLE `photos` (
   `photo` longblob,
   `note` varchar(255) DEFAULT NULL,
   `note2` varchar(255) DEFAULT NULL,
-  `istourplan` TINYINT(1) DEFAULT NULL,
-  `isorder` TINYINT(1) DEFAULT NULL,
+  `istourplan` tinyint(1) DEFAULT NULL,
+  `isorder` tinyint(1) DEFAULT NULL,
+  `savedtime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,6 +94,34 @@ CREATE TABLE `photos` (
 LOCK TABLES `photos` WRITE;
 /*!40000 ALTER TABLE `photos` DISABLE KEYS */;
 /*!40000 ALTER TABLE `photos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `shops`
+--
+
+DROP TABLE IF EXISTS `shops`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `shops` (
+  `id` int(11) NOT NULL,
+  `kam` int(11) NOT NULL,
+  `oz` int(11) NOT NULL,
+  `brand` int(11) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `street` varchar(255) NOT NULL,
+  `lon` double NOT NULL,
+  `lat` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `shops`
+--
+
+LOCK TABLES `shops` WRITE;
+/*!40000 ALTER TABLE `shops` DISABLE KEYS */;
+/*!40000 ALTER TABLE `shops` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,5 +133,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-27  2:03:27
-
+-- Dump completed on 2017-07-31 21:59:39
