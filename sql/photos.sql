@@ -26,7 +26,7 @@ CREATE TABLE `brands` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -52,8 +52,9 @@ CREATE TABLE `people` (
   `kam` tinyint(1) DEFAULT NULL,
   `oz` tinyint(1) DEFAULT NULL,
   `login` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `password` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,8 +112,9 @@ CREATE TABLE `shops` (
   `city` varchar(255) NOT NULL,
   `street` varchar(255) NOT NULL,
   `lon` double NOT NULL,
-  `lat` double NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `lat` double NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
