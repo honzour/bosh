@@ -4,9 +4,6 @@ include("utils.php");
 
 htmlHeader("Seznam obrázků");
 
-?>
-<?php
-	
 
 	$db = mysql_connect($db_host, $db_user, $db_password);
     mysql_set_charset ("utf8", $db);
