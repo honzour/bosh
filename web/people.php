@@ -46,7 +46,7 @@ else
 <FORM action="people.php" method="post">
 	<TR>
 		<TD><?php echo($row[0]); ?><input type = "hidden" name = "change" value = "1"></TD>
-		<TD><input type="text" value="<?php echo(htmlspecialchars($row[1])); ?>"></TD>
+		<TD><input type="text" name="name" value="<?php echo(htmlspecialchars($row[1])); ?>"></TD>
 		<TD><input type="text" value="<?php echo(htmlspecialchars($row[5])); ?>"></TD>
 		<TD><input type="CHECKBOX" <?php echo(($row[2] == 1) ? "checked" : ""); ?>></TD>
 		<TD><input type="CHECKBOX" <?php echo(($row[3] == 1) ? "checked" : ""); ?>></TD>
