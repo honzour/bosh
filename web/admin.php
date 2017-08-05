@@ -103,6 +103,7 @@ Nahrávám csv soubor...<BR>
 </P>
 <P>
 <A HREF="index.php">Zpět na hlavní stránku</A><BR>
+<A HREF="people.php">Osoby</A><BR>
 <A HREF="admin.php">Zpět na administraci</A>
 </P>
 	<?php
@@ -119,6 +120,11 @@ else
 <P>
 <INPUT type = "submit">
 </FORM>
+<P>
+<A HREF="index.php">Zpět na hlavní stránku</A><BR>
+<A HREF="people.php">Osoby</A><BR>
+</P>
+
 	<?php
 }
 ?>
