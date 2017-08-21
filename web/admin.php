@@ -118,7 +118,7 @@ else
 <TR><TD>CSV soubor s daty:</TD><TD><INPUT type = "file" name="file"></TD></TR>
 </TABLE>
 <P>
-<INPUT type = "submit">
+<INPUT type = "submit" value="Nahrát">
 </FORM>
 <P>
 <A HREF="index.php">Zpět na hlavní stránku</A><BR>
