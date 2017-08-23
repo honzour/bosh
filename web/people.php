@@ -33,6 +33,17 @@ htmlHeader("Uživatelé");
 			" where id = '" . mysql_escape_string($_POST["id"]) . "'";
 		mysql_query($query);
 	}
+	if ((array_key_exists("new", $_POST))) {
+		$query = "insert into people (name, login, password, kam, oz, admin) values (" . 
+			"'" . mysql_escape_string($_POST["name"]) . "', " .
+			"'" . mysql_escape_string($_POST["login"]) . "', " .
+			"'" . mysql_escape_string($_POST["password"]) . "', " .
+			(isset($_POST["kam"]) ? 1 : 0) . ", " .
+			(isset($_POST["oz"]) ? 1 : 0) . ", " .
+			(isset($_POST["admin"]) ? 1 : 0) .
+			")";
+		mysql_query($query);
+	}
 	$res = mysql_query("select id, name, admin, kam, oz, login, password from people");
 	while ($row = mysql_fetch_row($res)) {
 ?>
@@ -59,7 +70,7 @@ htmlHeader("Uživatelé");
 
 <FORM action="people.php" method="post">
 	<TR>
-		<TD><?php echo($row[0] + 1); ?><input type = "hidden" name = "change" value = "1"></TD>
+		<TD><?php echo($row[0] + 1); ?></TD>
 		<TD><input type="text" name="name" value=""></TD>
 		<TD><input type="CHECKBOX" name="admin"></TD>
 		<TD><input type="CHECKBOX" name="kam"></TD>
