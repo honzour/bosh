@@ -33,6 +33,11 @@ htmlHeader("Uživatelé");
 			" where id = '" . mysql_escape_string($_POST["id"]) . "'";
 		mysql_query($query);
 	}
+	if ((array_key_exists("delete", $_POST))) {
+		$query = "delete from people where id = '" . mysql_escape_string($_POST["id"]) . "'";
+		mysql_query($query);
+	}
+
 	if ((array_key_exists("new", $_POST))) {
 		$query = "insert into people (id, name, login, password, kam, oz, admin) values (" . 
 			mysql_escape_string($_POST["id"]) . ", " .
