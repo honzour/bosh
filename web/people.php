@@ -34,7 +34,8 @@ htmlHeader("Uživatelé");
 		mysql_query($query);
 	}
 	if ((array_key_exists("new", $_POST))) {
-		$query = "insert into people (name, login, password, kam, oz, admin) values (" . 
+		$query = "insert into people (id, name, login, password, kam, oz, admin) values (" . 
+			mysql_escape_string($_POST["id"]) . ", " .
 			"'" . mysql_escape_string($_POST["name"]) . "', " .
 			"'" . mysql_escape_string($_POST["login"]) . "', " .
 			"'" . mysql_escape_string($_POST["password"]) . "', " .
@@ -64,13 +65,13 @@ htmlHeader("Uživatelé");
 </FORM>
 <?php
 }
-	$res = mysql_query("select coalesce(max(id),0) from people");
+	$res = mysql_query("select coalesce(max(id),0) from people order by id");
 	$row = mysql_fetch_row($res);
 ?>
 
 <FORM action="people.php" method="post">
 	<TR>
-		<TD><?php echo($row[0] + 1); ?></TD>
+		<TD><?php echo($row[0] + 1); ?><input type = "hidden" name = "id" value = "<?php echo($row[0] + 1); ?>"></TD>
 		<TD><input type="text" name="name" value=""></TD>
 		<TD><input type="CHECKBOX" name="admin"></TD>
 		<TD><input type="CHECKBOX" name="kam"></TD>
