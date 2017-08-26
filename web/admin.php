@@ -143,18 +143,28 @@ Nahrávám csv soubor...<BR>
 						$lon = mysql_escape_string($fields[8]);
 						$lat = mysql_escape_string($fields[9]);
 
-						$res = mysql_query("insert into shops(id, kam, oz, brand, city, street, lon, lat) values (" .
+						$query = "insert into shops(id, kam, oz, brand, city, street, lon, lat) values (" .
 							"'$shop_id', " .
-							"'$person_1_id', " .
-							"'$person_2_id', " .
-						")");
+							"$person1_id, " .
+							"$person2_id, " .
+							"0, " .
+							"'$city', " .
+							"'$street', " .
+							"$lon, " .
+							"$lat".
+						")";
+
+						$res = mysql_query($query);
 						if (!$res) {
 							$ok = false;
-							echo("Chyba na řádku $i: ");
+							echo("Chyba na řádku $i v dotazu $query <BR>");
 							echo(mysql_error());
 							break;
 						}
 					}
+				}
+				if ($ok) {
+					echo("Hotovo<BR>\n");
 				}
 			} // else
 		}
