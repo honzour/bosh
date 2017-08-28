@@ -142,12 +142,21 @@ Nahrávám csv soubor...<BR>
 						$street = mysql_escape_string($fields[7]);
 						$lon = mysql_escape_string($fields[8]);
 						$lat = mysql_escape_string($fields[9]);
+						$query = "select id from brands where name = '$brand'";
+						$res = mysql_query($query);
+						if (!$res) {
+							$ok = false;
+							echo("Chyba na řádku $i v dotazu $query <BR>");
+							echo(mysql_error());
+							break;
+						}
+						$brand_id = mysql_fetch_row($res)[0];
 
 						$query = "insert into shops(id, kam, oz, brand, city, street, lon, lat) values (" .
 							"'$shop_id', " .
 							"$person1_id, " .
 							"$person2_id, " .
-							"0, " .
+							"$brand_id, " .
 							"'$city', " .
 							"'$street', " .
 							"$lon, " .
