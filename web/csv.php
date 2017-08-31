@@ -1,8 +1,11 @@
 <?php
+
+header('Content-Type: text/plain; charset=utf-8');
+
 include("db.php");
 include("utils.php");
 
-htmlHeader("Administrace");
+
 	
 
 if (array_key_exists("csv", $_POST))
@@ -209,6 +212,3 @@ else
 <?php
 }
 ?>
-
-</BODY>
-</HTML>
