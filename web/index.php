@@ -6,6 +6,9 @@ htmlHeader("Seznam obrázků");
 
 
 	$db = mysql_connect($db_host, $db_user, $db_password);
+	if (!$db) {
+		echo(mysql_error());
+	}
     mysql_set_charset ("utf8", $db);
 	mysql_select_db($db_db, $db);
 
@@ -16,6 +19,10 @@ htmlHeader("Seznam obrázků");
 	}
 
 	$result = mysql_query("SELECT id, lon, lat, acc, photo, note, note2, istourplan, isorder FROM photos",$db);
+	if (!$result) {
+		echo(mysql_error());
+	}
+
 
 	while ($row = mysql_fetch_row($result)) {
 ?>
