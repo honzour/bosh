@@ -65,16 +65,17 @@ Nahrávám csv soubor...<BR>
 					} else
 					{
 //							1, Jan Čarný, 2, Karel Otrok, COOP, 1, Kozolupy, Bubovická 7, 14.25, 50.325
-						$person1_id = mysql_escape_string($fields[0]);
-						$person1 = mysql_escape_string($fields[1]);
-						$person2_id = mysql_escape_string($fields[2]);
-						$person2 = mysql_escape_string($fields[3]);
-						$brand = mysql_escape_string($fields[4]);
-						$shop_id = mysql_escape_string($fields[5]);
-						$city = mysql_escape_string($fields[6]);
-						$street = mysql_escape_string($fields[7]);
-						$lon = mysql_escape_string($fields[8]);
-						$lat = mysql_escape_string($fields[9]);
+						$person1_id = mysql_escape_string(trim($fields[0]));
+						$person1 = mysql_escape_string(trim($fields[1]));
+						$person2_id = mysql_escape_string(trim($fields[2]));
+						$person2 = mysql_escape_string(trim($fields[3]));
+						$brand = mysql_escape_string(trim($fields[4]));
+						$shop_id = mysql_escape_string(trim($fields[5]));
+						$city = mysql_escape_string(trim($fields[6]));
+						$street = mysql_escape_string(trim($fields[7]));
+						$lon = mysql_escape_string(trim($fields[8]));
+						$lat = mysql_escape_string(trim($fields[9]));
+
 
 						$res = mysql_query("select count(1) as cnt from people where id = $person1_id and kam = 1");
 						$cnt = mysql_fetch_row($res)[0];
@@ -102,7 +103,7 @@ Nahrávám csv soubor...<BR>
 						if (count($rows) <= $row + 1)
 							break;
 						$fields = explode(",", $data);
-						$brand = mysql_escape_string($fields[4]);
+						$brand = mysql_escape_string(trim($fields[4]));
 						$res = mysql_query("select count(1) as cnt from brands where name = '$brand'");
 						if (!$res) {
 							$ok = false;
@@ -132,16 +133,16 @@ Nahrávám csv soubor...<BR>
 						if (count($rows) <= $row + 1)
 							break;
 						$fields = explode(",", $data);
-						$person1_id = mysql_escape_string($fields[0]);
-						$person1 = mysql_escape_string($fields[1]);
-						$person2_id = mysql_escape_string($fields[2]);
-						$person2 = mysql_escape_string($fields[3]);
-						$brand = mysql_escape_string($fields[4]);
-						$shop_id = mysql_escape_string($fields[5]);
-						$city = mysql_escape_string($fields[6]);
-						$street = mysql_escape_string($fields[7]);
-						$lon = mysql_escape_string($fields[8]);
-						$lat = mysql_escape_string($fields[9]);
+						$person1_id = mysql_escape_string(trim($fields[0]));
+						$person1 = mysql_escape_string(trim($fields[1]));
+						$person2_id = mysql_escape_string(trim($fields[2]));
+						$person2 = mysql_escape_string(trim($fields[3]));
+						$brand = mysql_escape_string(trim($fields[4]));
+						$shop_id = mysql_escape_string(trim($fields[5]));
+						$city = mysql_escape_string(trim($fields[6]));
+						$street = mysql_escape_string(trim($fields[7]));
+						$lon = mysql_escape_string(trim($fields[8]));
+						$lat = mysql_escape_string(trim($fields[9]));
 						$query = "select id from brands where name = '$brand'";
 						$res = mysql_query($query);
 						if (!$res) {
@@ -183,7 +184,7 @@ Nahrávám csv soubor...<BR>
 <P>
 <A HREF="index.php">Zpět na hlavní stránku</A><BR>
 <A HREF="people.php">Editace osob</A><BR>
-<A HREF="admin.php">Zpět na administraci</A>
+<A HREF="admin.php">Zpět na administraci</A><BR>
 <A HREF="csv.php">CSV export</A>
 </P>
 	<?php
