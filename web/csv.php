@@ -8,7 +8,15 @@ include("utils.php");
 	$db = mysql_connect($db_host, $db_user, $db_password);
 	mysql_set_charset ("utf8", $db);
 	mysql_select_db($db_db, $db);
-	$res = mysql_query("select concat_ws(', ', s.kam, k.name, s.oz, o.name, b.name, s.id, s.city, s.street, s.lon, s.lat) from shops s left join brands b on b.id = s.brand left join people k on k.id = s.kam left join people o on o.id = s.oz order by s.id");
+	
+	if ((array_key_exists("login", $_POST))) {
+		$query = "select concat_ws(',', b.name, s.city, s.street, s.lon, s.lat) from shops s left join brands b on s.brand = b.id left join people p on p.id = s.oz where p.login='" .
+			mysql_escape_string($_POST["login"]) . "'and p.password='" . mysql_escape_string($_POST["password"]) . "' order by s.id";
+	} else {
+		$query = "select concat_ws(', ', s.kam, k.name, s.oz, o.name, b.name, s.id, s.city, s.street, s.lon, s.lat) from shops s left join brands b on b.id = s.brand left join people k on k.id = s.kam left join people o on o.id = s.oz order by s.id";
+	}
+
+	$res = mysql_query($query);
 	if (!$res) {
 		$ok = false;
 		echo(mysql_error());
