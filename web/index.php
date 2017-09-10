@@ -2,8 +2,12 @@
 include("db.php");
 include("utils.php");
 
-htmlHeader("Seznam obrázků");
+	if (isset($_POST[$var_login]) || isset($_POST[$var_password])) {
+		setcookie($var_login, $_POST[$var_login], $cookie_expire, $cookie_path);
+		setcookie($var_password, $_POST[$var_password], $cookie_expire, $cookie_path);
+	}
 
+	htmlHeader("Seznam obrázků");
 
 	$db = mysql_connect($db_host, $db_user, $db_password);
 	if (!$db) {
@@ -12,19 +16,34 @@ htmlHeader("Seznam obrázků");
     mysql_set_charset ("utf8", $db);
 	mysql_select_db($db_db, $db);
 
-	if (array_key_exists("action", $_GET) && $_GET["action"] == "delete") {
-		$id = mysql_escape_string($_GET["id"]);
+	if (!isset($_COOKIE[$var_login]) || !isset($_COOKIE[$var_password]))
+	{
+?>
 
-		mysql_query("DELETE FROM photos WHERE id = '" . $id . "'", $db);
+	<FORM method="post" action = "index.php">
+		Login: <INPUT type="text" name = "<?php echo($var_login); ?>"><BR>
+		Heslo: <INPUT type="text" name = "<?php echo($var_password); ?>"><BR>
+		<INPUT type="submit" value="Odeslat">
+	</FORM>
+
+<?php
 	}
+    else
+	{
 
-	$result = mysql_query("SELECT id, lon, lat, acc, photo, note, note2, istourplan, isorder FROM photos",$db);
-	if (!$result) {
-		echo(mysql_error());
-	}
+		if (array_key_exists("action", $_GET) && $_GET["action"] == "delete") {
+			$id = mysql_escape_string($_GET["id"]);
+
+			mysql_query("DELETE FROM photos WHERE id = '" . $id . "'", $db);
+		}
+
+		$result = mysql_query("SELECT id, lon, lat, acc, photo, note, note2, istourplan, isorder FROM photos",$db);
+		if (!$result) {
+			echo(mysql_error());
+		}
 
 
-	while ($row = mysql_fetch_row($result)) {
+		while ($row = mysql_fetch_row($result)) {
 ?>
 <P>
 <?php
@@ -42,9 +61,11 @@ htmlHeader("Seznam obrázků");
 </P>
 <HR>
 <?php
+		}
+		mysql_free_result($result);
+		mysql_close($db);
 	}
-	mysql_free_result($result);
-	mysql_close($db)
+
 
  ?>
 </BODY>
