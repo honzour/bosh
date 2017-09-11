@@ -3,8 +3,19 @@ include("db.php");
 include("utils.php");
 
 	if (isset($_POST[$var_login]) || isset($_POST[$var_password])) {
-		setcookie($var_login, $_POST[$var_login], $cookie_expire, $cookie_path);
-		setcookie($var_password, $_POST[$var_password], $cookie_expire, $cookie_path);
+		$login = $_POST[$var_login];
+		$password = $_POST[$var_password];
+		setcookie($var_login, $login, $cookie_expire, $cookie_path);
+		setcookie($var_password, $password, $cookie_expire, $cookie_path);
+
+	} else {
+		if (isset($_COOKIE[$var_login]) || isset($_COOKIE[$var_password])) {
+			$login = $_COOKIE[$var_login];
+			$password = $_COOKIE[$var_password];
+		} else {
+			$login = "";
+			$password = "";
+		}
 	}
 
 	htmlHeader("Seznam obrázků");
@@ -16,7 +27,7 @@ include("utils.php");
     mysql_set_charset ("utf8", $db);
 	mysql_select_db($db_db, $db);
 
-	if (!isset($_COOKIE[$var_login]) || !isset($_COOKIE[$var_password]))
+	if ($login == "" || $password == "")
 	{
 ?>
 
@@ -64,6 +75,15 @@ include("utils.php");
 		}
 		mysql_free_result($result);
 		mysql_close($db);
+?>
+<P>
+<A HREF="people.php">Editace osob</A><BR>
+<A HREF="admin.php">Administrace</A><BR>
+<A HREF="csv.php">CSV export</A><BR>
+<A HREF="logout.php">Odhlášení</A>
+</P>
+
+<?php
 	}
 
 
