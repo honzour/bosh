@@ -6,6 +6,48 @@ htmlHeader("Uživatelé");
 	
 
 ?>
+
+<?php
+	$db = mysql_connect($db_host, $db_user, $db_password);
+	mysql_set_charset ("utf8", $db);
+	mysql_select_db($db_db, $db);
+
+	$loginok = false;
+	if (isset($_COOKIE[$var_login]) && isset($_COOKIE[$var_password])) {
+		$login = $_COOKIE[$var_login];
+		$password = $_COOKIE[$var_password];
+
+		$result = mysql_query("SELECT id, name, admin, kam, oz, login FROM people where login = '" . mysql_escape_string($login) . "' and password = '" . mysql_escape_string($password) . "' and admin = 1",$db);
+		if (!$result) {
+			echo(mysql_error());
+		}
+		$row = mysql_fetch_row($result);
+		if ($row) {
+			$loginok = true;
+		} else
+		{
+?>
+Nejste přihlášen jako administrátor.
+<P>
+<A HREF="logout.php">Odhlášení</A><BR>
+</P>
+<?php
+
+		}
+			
+	} else
+	{
+?>
+Nejste vůbec přihlášen.
+<P>
+<A HREF="index.php">Přihlášení na hlavni stránce</A><BR>
+</P>
+<?php
+	}
+	
+	if ($loginok)
+	{
+?>
 <H2>Správa uživatelů</H2>	
 <TABLE border="3">
 <TR>
@@ -19,39 +61,37 @@ htmlHeader("Uživatelé");
 	<TD colspan="2">akce</TD>
 </TR>
 <?php
-	$db = mysql_connect($db_host, $db_user, $db_password);
-	mysql_set_charset ("utf8", $db);
-	mysql_select_db($db_db, $db);
-	if ((array_key_exists("change", $_POST))) {
-		$query = "update people set " . 
-			"name = '" . mysql_escape_string($_POST["name"]) . "', " .
-			"login = '" . mysql_escape_string($_POST["login"]) . "', " .
-			"password = '" . mysql_escape_string($_POST["password"]) . "', " .
-			"kam = " . (isset($_POST["kam"]) ? 1 : 0) . ", " .
-			"oz = " . (isset($_POST["oz"]) ? 1 : 0) . ", " .
-			"admin = " . (isset($_POST["admin"]) ? 1 : 0) . 
-			" where id = '" . mysql_escape_string($_POST["id"]) . "'";
-		mysql_query($query);
-	}
-	if ((array_key_exists("delete", $_POST))) {
-		$query = "delete from people where id = '" . mysql_escape_string($_POST["id"]) . "'";
-		mysql_query($query);
-	}
 
-	if ((array_key_exists("new", $_POST))) {
-		$query = "insert into people (id, name, login, password, kam, oz, admin) values (" . 
-			mysql_escape_string($_POST["id"]) . ", " .
-			"'" . mysql_escape_string($_POST["name"]) . "', " .
-			"'" . mysql_escape_string($_POST["login"]) . "', " .
-			"'" . mysql_escape_string($_POST["password"]) . "', " .
-			(isset($_POST["kam"]) ? 1 : 0) . ", " .
-			(isset($_POST["oz"]) ? 1 : 0) . ", " .
-			(isset($_POST["admin"]) ? 1 : 0) .
-			")";
-		mysql_query($query);
-	}
-	$res = mysql_query("select id, name, admin, kam, oz, login, password from people");
-	while ($row = mysql_fetch_row($res)) {
+		if ((array_key_exists("change", $_POST))) {
+			$query = "update people set " . 
+				"name = '" . mysql_escape_string($_POST["name"]) . "', " .
+				"login = '" . mysql_escape_string($_POST["login"]) . "', " .
+				"password = '" . mysql_escape_string($_POST["password"]) . "', " .
+				"kam = " . (isset($_POST["kam"]) ? 1 : 0) . ", " .
+				"oz = " . (isset($_POST["oz"]) ? 1 : 0) . ", " .
+				"admin = " . (isset($_POST["admin"]) ? 1 : 0) . 
+				" where id = '" . mysql_escape_string($_POST["id"]) . "'";
+			mysql_query($query);
+		}
+		if ((array_key_exists("delete", $_POST))) {
+			$query = "delete from people where id = '" . mysql_escape_string($_POST["id"]) . "'";
+			mysql_query($query);
+		}
+
+		if ((array_key_exists("new", $_POST))) {
+			$query = "insert into people (id, name, login, password, kam, oz, admin) values (" . 
+				mysql_escape_string($_POST["id"]) . ", " .
+				"'" . mysql_escape_string($_POST["name"]) . "', " .
+				"'" . mysql_escape_string($_POST["login"]) . "', " .
+				"'" . mysql_escape_string($_POST["password"]) . "', " .
+				(isset($_POST["kam"]) ? 1 : 0) . ", " .
+				(isset($_POST["oz"]) ? 1 : 0) . ", " .
+				(isset($_POST["admin"]) ? 1 : 0) .
+				")";
+			mysql_query($query);
+		}
+		$res = mysql_query("select id, name, admin, kam, oz, login, password from people");
+		while ($row = mysql_fetch_row($res)) {
 ?>
 
 
@@ -69,7 +109,7 @@ htmlHeader("Uživatelé");
 	</TR>
 </FORM>
 <?php
-}
+	}
 	$res = mysql_query("select coalesce(max(id),0) from people order by id");
 	$row = mysql_fetch_row($res);
 ?>
@@ -90,15 +130,17 @@ htmlHeader("Uživatelé");
 </TABLE>
 <P>
 <?php
-if (isset($query)) {
-	echo("Provedena změna v databázi: " . $query);
-}
+	if (isset($query)) {
+		echo("Provedena změna v databázi: " . $query);
+	}
 ?>
 </P>
 <P>
 <A HREF="index.php">Zpět na hlavní stránku</A><BR>
 <A HREF="admin.php">Zpět na administraci</A>
 </P>
-
+<?php
+}
+?>
 </BODY>
 </HTML>

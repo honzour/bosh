@@ -105,6 +105,7 @@ include("utils.php");
 		mysql_close($db);
 ?>
 <P>
+<A HREF="add.php">Přidání obrázku</A><BR>
 <A HREF="people.php">Editace osob</A><BR>
 <A HREF="admin.php">Administrace</A><BR>
 <A HREF="csv.php">CSV export</A><BR>
