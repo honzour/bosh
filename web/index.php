@@ -27,7 +27,35 @@ include("utils.php");
     mysql_set_charset ("utf8", $db);
 	mysql_select_db($db_db, $db);
 
+	$loginok = true;
 	if ($login == "" || $password == "")
+	{
+		$loginok = false;
+	} else {
+		$result = mysql_query("SELECT id, name, admin, kam, oz, login FROM people where login = '" . mysql_escape_string($login) . "' and password = '" . mysql_escape_string($password) . "' and (admin = 1 or kam = 1 or oz = 1)",$db);
+		if (!$result) {
+			echo(mysql_error());
+		}
+		$row = mysql_fetch_row($result);
+		if (!$row) {
+			$loginok = false;
+?>
+	<P>
+		Chybný login nebo heslo. Přihlaste se znovu.
+	</P>
+<?php
+
+		}
+		else
+		{
+?>
+	<H2>Seznam obrázků</H2>
+<?php
+
+			echo("Přihlášen " . $row[1]);	
+		}
+	}
+	if (!$loginok)
 	{
 ?>
 
