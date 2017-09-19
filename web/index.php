@@ -30,6 +30,7 @@ include("utils.php");
 	}
     else
 	{
+		// TODO access rights!
 
 		if (array_key_exists("action", $_GET) && $_GET["action"] == "delete") {
 			$id = mysql_escape_string($_GET["id"]);

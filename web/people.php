@@ -8,34 +8,21 @@ htmlHeader("Uživatelé");
 ?>
 
 <?php
-	$db = mysql_connect($db_host, $db_user, $db_password);
-	mysql_set_charset ("utf8", $db);
-	mysql_select_db($db_db, $db);
 
-	$loginok = false;
-	if (isset($_COOKIE[$var_login]) && isset($_COOKIE[$var_password])) {
-		$login = $_COOKIE[$var_login];
-		$password = $_COOKIE[$var_password];
-
-		$result = mysql_query("SELECT id, name, admin, kam, oz, login FROM people where login = '" . mysql_escape_string($login) . "' and password = '" . mysql_escape_string($password) . "' and admin = 1",$db);
-		if (!$result) {
-			echo(mysql_error());
-		}
-		$row = mysql_fetch_row($result);
-		if ($row) {
-			$loginok = true;
-		} else
-		{
+	loginUser();
+	
+	if ($admin) {
+		$loginok = true;
+	} else
+	{
+		if ($person_id) {
 ?>
 Nejste přihlášen jako administrátor.
 <P>
 <A HREF="logout.php">Odhlášení</A><BR>
 </P>
 <?php
-
-		}
-			
-	} else
+		} else
 	{
 ?>
 Nejste vůbec přihlášen.
@@ -44,6 +31,8 @@ Nejste vůbec přihlášen.
 </P>
 <?php
 	}
+			
+	} 
 	
 	if ($loginok)
 	{

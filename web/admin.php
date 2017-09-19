@@ -3,6 +3,12 @@ include("db.php");
 include("utils.php");
 
 htmlHeader("Administrace");
+
+loginUser();
+
+if (!$admin) {
+	die("Přihlaste se jako admin");
+}
 	
 
 if (array_key_exists("csv", $_POST))

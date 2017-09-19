@@ -11,6 +11,13 @@ $cookie_path = "/";
 $var_login = "login";
 $var_password = "password";
 
+function errorHeader($code, $desc) {
+		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+		header($protocol . ' ' . $code . ' ' . $desc);
+		die("Error $code, $desc");
+}
+
+
 function loginUser() {
     global $person_id;
     global $name;
@@ -58,10 +65,12 @@ function loginUser() {
 
 	$db = mysql_connect($db_host, $db_user, $db_password);
 	if (!$db) {
-		echo(mysql_error());
+		errorHeader(500, "Cannot connect to the database " . mysql_error());
 	}
     mysql_set_charset ("utf8", $db);
-	mysql_select_db($db_db, $db);
+	if (!mysql_select_db($db_db, $db)) {
+		errorHeader(500, "Cannot select the database " . mysql_error($db));
+	}
 
 	$loginok = true;
 	if ($login == "" || $password == "")

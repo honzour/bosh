@@ -4,25 +4,15 @@ include("utils.php");
 
 	$title = "Přidání obrázku";
 
-	function errorHeader($code, $desc) {
-		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
-		header($protocol . ' ' . $code . ' ' . $desc);
-		die("Error $code, $desc");
+	loginUser();
+
+	if (!$worker) {
+		errorHeader(403, "Please ogin as a worker.");		
 	}
 
 
 	if (array_key_exists("lon", $_POST)) {
 
-		$db = mysql_connect($db_host, $db_user, $db_password);
-        mysql_set_charset ("utf8", $db);
-
-		if (!$db) {
-			errorHeader(500, "Cannot connect to the database " . mysql_error());
-		}
-
-		if (!mysql_select_db($db_db, $db)) {
-			errorHeader(500, "Cannot select the database " . mysql_error($db));
-		}
 
 		if (array_key_exists('file', $_FILES) && strlen($tmpName = $_FILES['file']['tmp_name']) > 0	) {
 
