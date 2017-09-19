@@ -2,60 +2,21 @@
 include("db.php");
 include("utils.php");
 
-	if (isset($_POST[$var_login]) || isset($_POST[$var_password])) {
-		$login = $_POST[$var_login];
-		$password = $_POST[$var_password];
-		setcookie($var_login, $login, $cookie_expire, $cookie_path);
-		setcookie($var_password, $password, $cookie_expire, $cookie_path);
-
-	} else {
-		if (isset($_COOKIE[$var_login]) || isset($_COOKIE[$var_password])) {
-			$login = $_COOKIE[$var_login];
-			$password = $_COOKIE[$var_password];
-		} else {
-			$login = "";
-			$password = "";
-		}
-	}
+	loginUser();
 
 	htmlHeader("Seznam obrázků");
 
-	$db = mysql_connect($db_host, $db_user, $db_password);
-	if (!$db) {
-		echo(mysql_error());
-	}
-    mysql_set_charset ("utf8", $db);
-	mysql_select_db($db_db, $db);
-
-	$loginok = true;
-	if ($login == "" || $password == "")
-	{
-		$loginok = false;
-	} else {
-		$result = mysql_query("SELECT id, name, admin, kam, oz, login FROM people where login = '" . mysql_escape_string($login) . "' and password = '" . mysql_escape_string($password) . "' and (admin = 1 or kam = 1 or oz = 1)",$db);
-		if (!$result) {
-			echo(mysql_error());
-		}
-		$row = mysql_fetch_row($result);
-		if (!$row) {
-			$loginok = false;
-?>
-	<P>
-		Chybný login nebo heslo. Přihlaste se znovu.
-	</P>
-<?php
-
-		}
-		else
-		{
 ?>
 	<H2>Seznam obrázků</H2>
 <?php
 
-			echo("Přihlášen " . $row[1]);	
-		}
+	if ($name) {
+		echo("Přihlášen " . $name);	
 	}
-	if (!$loginok)
+	if ($error) {
+		echo($error);
+	}
+	if (!$person_id)
 	{
 ?>
 
