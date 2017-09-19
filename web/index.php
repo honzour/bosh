@@ -38,7 +38,7 @@ include("utils.php");
 			mysql_query("DELETE FROM photos WHERE id = '" . $id . "'", $db);
 		}
 
-		$result = mysql_query("SELECT id, lon, lat, acc, photo, note, note2, istourplan, isorder FROM photos",$db);
+		$result = mysql_query("SELECT id, lon, lat, acc, photo, note, note2, istourplan, isorder FROM photos", $db);
 		if (!$result) {
 			echo(mysql_error());
 		}

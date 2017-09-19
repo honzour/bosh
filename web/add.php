@@ -102,11 +102,19 @@ Fotka přidána.<BR>
 	else {
 		htmlHeader($title);
 ?>
+<H2><?php echo($title);?></H2>
 <FORM action="add.php" method="post" enctype="multipart/form-data">
 <TABLE>
-<TR><TD>Délka:</TD><TD><INPUT type="text" name="lon"></TD></TR>
-<TR><TD>Šířka:</TD><TD><INPUT type="text" name="lat"></TD></TR>
-<TR><TD>Přesnost:</TD><TD><INPUT type="text" name="acc"></TD></TR>
+
+<TR><TD>Obchod:</TD><TD><SELECT name="shop">
+<?php
+	$result = mysql_query("select s.id, concat(b.name, ' ', s.city, ' ', s.street) from shops s left join brands b on s.brand = b.id where s.oz = $person_id", $db);
+	while ($row = mysql_fetch_row($result))
+		echo("<OPTION value=\"". $row[0] ."\">" . $row[1] ."</OPTION>");
+
+?>
+</SELECT>
+</TR>
 <TR><TD>Poznámka:</TD><TD><INPUT type="text" name="note"></TD></TR>
 <TR><TD>Koment k promotérovi:</TD><TD><INPUT type="text" name="note2"></TD></TR>
 <TR><TD>Tourplán:</TD><TD><INPUT type="checkbox" name="istourplan" value="1"></TD></TR>
