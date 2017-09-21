@@ -38,7 +38,7 @@ include("utils.php");
 			mysql_query("DELETE FROM photos WHERE id = '" . $id . "'", $db);
 		}
 
-		$result = mysql_query("SELECT id, photo, note, note2, istourplan, isorder FROM photos", $db);
+		$result = mysql_query("SELECT p.id, p.photo, p.note, p.note2, p.istourplan, p.isorder, concat_ws(', ', b.name, s.street, s.city) FROM photos p left join shops s on s.id = p.shop left join brands b on b.id = s.brand", $db);
 		if (!$result) {
 			echo(mysql_error());
 		}
@@ -49,6 +49,7 @@ include("utils.php");
 <P>
 <?php
 		echo("<H3> obrázek " . $row[0] . "</H3>\n");
+        echo("obchod: " . htmlspecialchars($row[6]) . "<BR><BR>\n");
         echo("poznámka: " . htmlspecialchars($row[2]) . "<BR><BR>\n");
         echo("koment k promotérovi: " . htmlspecialchars($row[3]) . "<BR><BR>\n");
         echo("tourplan: " . ($row[4] ? "ano" : "ne") . "<BR><BR>\n");

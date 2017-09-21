@@ -11,7 +11,7 @@ include("utils.php");
 	}
 
 
-	if (array_key_exists("lon", $_POST)) {
+	if (array_key_exists("shop", $_POST)) {
 
 
 		if (array_key_exists('file', $_FILES) && strlen($tmpName = $_FILES['file']['tmp_name']) > 0	) {
@@ -39,11 +39,9 @@ include("utils.php");
 				$data = mysql_escape_string($data);
 				fclose($fp);
 
-				$r = mysql_query("INSERT INTO photos (lon, lat, acc, photo, note, note2, istourplan, isorder) VALUES (" . 
-					"'" . mysql_escape_string($_POST["lon"]) .  "', " .
-					"'" . mysql_escape_string($_POST["lat"]) .  "', " .
-					"'" . mysql_escape_string($_POST["acc"]) .  "', " .
+				$r = mysql_query("INSERT INTO photos (photo, shop, note, note2, istourplan, isorder) VALUES (" . 
 					"'" . $data .  "'," .
+					"'" . mysql_escape_string($_POST["shop"]) .  "', " .
 					"'" . mysql_escape_string($_POST["note"]) .  "', " .
 					"'" . mysql_escape_string($_POST["note2"]) .  "', " .
 					"'" . (isset($_POST["istourplan"]) ? 1 : 0) .  "', " .
@@ -53,10 +51,9 @@ include("utils.php");
 					errorHeader(500, "Cannot insert uploaded file into db " . mysql_error($db));
 				}
 			} else {
-				$r = mysql_query("INSERT INTO photos (lon, lat, acc, photo, note, note2, istourplan, isorder) VALUES (" . 
-					"'" . mysql_escape_string($_POST["lon"]) .  "', " .
-					"'" . mysql_escape_string($_POST["lat"]) .  "', " .
-					"'" . mysql_escape_string($_POST["acc"]) .  "', '', " . // acc + photo
+				$r = mysql_query("INSERT INTO photos (photo, shop, note, note2, istourplan, isorder) VALUES (" . 
+					"'', " . // photo
+					"'" . mysql_escape_string($_POST["shop"]) .  "', " .
 					"'" . mysql_escape_string($_POST["note"]) .  "', " .
 					"'" . mysql_escape_string($_POST["note2"]) .  "', " .
 					"'" . (isset($_POST["istourplan"]) ? 1 : 0) .  "', " .
