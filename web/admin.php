@@ -83,17 +83,17 @@ Nahrávám csv soubor...<BR>
 						$lat = mysql_escape_string(trim($fields[9]));
 
 
-						$res = mysql_query("select count(1) as cnt from people where id = $person1_id and kam = 1");
+						$res = mysql_query("select count(1) as cnt from people where id = $person1_id and boss = 1");
 						$cnt = mysql_fetch_row($res)[0];
 						if (!$cnt) {
-							echo("V databázi není žádný KAM $person1 s id $person1_id, chyba na řádku $i");
+							echo("V databázi není žádný boss $person1 s id $person1_id, chyba na řádku $i");
 							$ok = false;
 							break;
 						}
-						$res = mysql_query("select count(1) as cnt from people where id = $person2_id and oz = 1");
+						$res = mysql_query("select count(1) as cnt from people where id = $person2_id and worker = 1");
 						$cnt = mysql_fetch_row($res)[0];
 						if (!$cnt) {
-							echo("V databázi není žádný OZ $person2 s id $person2_id, chyba na řádku $i");
+							echo("V databázi není žádný worker $person2 s id $person2_id, chyba na řádku $i");
 							$ok = false;
 							break;
 						}
@@ -159,7 +159,7 @@ Nahrávám csv soubor...<BR>
 						}
 						$brand_id = mysql_fetch_row($res)[0];
 
-						$query = "insert into shops(id, kam, oz, brand, city, street, lon, lat) values (" .
+						$query = "insert into shops(id, boss, worker, brand, city, street, lon, lat) values (" .
 							"'$shop_id', " .
 							"$person1_id, " .
 							"$person2_id, " .
