@@ -7,7 +7,7 @@ include("utils.php");
 	loginUser();
 
 	if (!$worker) {
-		errorHeader(403, "Please ogin as a worker.");		
+		errorHeader(403, "Please login as a worker.");		
 	}
 
 
@@ -108,7 +108,7 @@ Fotka přidána.<BR>
 
 <TR><TD>Obchod:</TD><TD><SELECT name="shop">
 <?php
-	$result = mysql_query("select s.id, concat(b.name, ' ', s.city, ' ', s.street) from shops s left join brands b on s.brand = b.id where s.oz = $person_id", $db);
+	$result = mysql_query("select s.id, concat(b.name, ' ', s.city, ' ', s.street) from shops s left join brands b on s.brand = b.id where s.worker = $person_id", $db);
 	while ($row = mysql_fetch_row($result))
 		echo("<OPTION value=\"". $row[0] ."\">" . $row[1] ."</OPTION>");
 

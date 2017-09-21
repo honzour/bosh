@@ -63,6 +63,8 @@ function loginUser() {
 		}
 	}
 
+//echo($login . "' '". $password);
+
 	$db = mysql_connect($db_host, $db_user, $db_password);
 	if (!$db) {
 		errorHeader(500, "Cannot connect to the database " . mysql_error());
@@ -77,7 +79,7 @@ function loginUser() {
 	{
 		$loginok = false;
 	} else {
-		$result = mysql_query("SELECT id, name, admin, kam, oz FROM people where login = '" . mysql_escape_string($login) . "' and password = '" . mysql_escape_string($password) . "'",$db);
+		$result = mysql_query("SELECT id, name, admin, boss, worker FROM people where login = '" . mysql_escape_string($login) . "' and password = '" . mysql_escape_string($password) . "'",$db);
 		if (!$result) {
 			echo(mysql_error());
 		}

@@ -43,8 +43,8 @@ Nejste vůbec přihlášen.
 	<TD>id</TD>
 	<TD>jméno</TD>
 	<TD>admin</TD>
-	<TD>kam</TD>
-	<TD>oz</TD>
+	<TD>boss</TD>
+	<TD>worker</TD>
 	<TD>login</TD>
 	<TD>heslo</TD>
 	<TD colspan="2">akce</TD>
@@ -54,10 +54,10 @@ Nejste vůbec přihlášen.
 		if ((array_key_exists("change", $_POST))) {
 			$query = "update people set " . 
 				"name = '" . mysql_escape_string($_POST["name"]) . "', " .
-				"login = '" . mysql_escape_string($_POST["login"]) . "', " .
-				"password = '" . mysql_escape_string($_POST["password"]) . "', " .
-				"kam = " . (isset($_POST["kam"]) ? 1 : 0) . ", " .
-				"oz = " . (isset($_POST["oz"]) ? 1 : 0) . ", " .
+				"login = '" . mysql_escape_string($_POST["flogin"]) . "', " .
+				"password = '" . mysql_escape_string($_POST["fpassword"]) . "', " .
+				"boss = " . (isset($_POST["boss"]) ? 1 : 0) . ", " .
+				"worker = " . (isset($_POST["worker"]) ? 1 : 0) . ", " .
 				"admin = " . (isset($_POST["admin"]) ? 1 : 0) . 
 				" where id = '" . mysql_escape_string($_POST["id"]) . "'";
 			mysql_query($query);
@@ -68,18 +68,18 @@ Nejste vůbec přihlášen.
 		}
 
 		if ((array_key_exists("new", $_POST))) {
-			$query = "insert into people (id, name, login, password, kam, oz, admin) values (" . 
+			$query = "insert into people (id, name, login, password, boss, worker, admin) values (" . 
 				mysql_escape_string($_POST["id"]) . ", " .
 				"'" . mysql_escape_string($_POST["name"]) . "', " .
-				"'" . mysql_escape_string($_POST["login"]) . "', " .
-				"'" . mysql_escape_string($_POST["password"]) . "', " .
-				(isset($_POST["kam"]) ? 1 : 0) . ", " .
-				(isset($_POST["oz"]) ? 1 : 0) . ", " .
+				"'" . mysql_escape_string($_POST["flogin"]) . "', " .
+				"'" . mysql_escape_string($_POST["fpassword"]) . "', " .
+				(isset($_POST["boss"]) ? 1 : 0) . ", " .
+				(isset($_POST["worker"]) ? 1 : 0) . ", " .
 				(isset($_POST["admin"]) ? 1 : 0) .
 				")";
 			mysql_query($query);
 		}
-		$res = mysql_query("select id, name, admin, kam, oz, login, password from people");
+		$res = mysql_query("select id, name, admin, boss, worker, login, password from people");
 		while ($row = mysql_fetch_row($res)) {
 ?>
 
@@ -89,10 +89,10 @@ Nejste vůbec přihlášen.
 		<TD><?php echo($row[0]); ?><input type = "hidden" name = "id" value = "<?php echo($row[0]); ?>"></TD>
 		<TD><input type="text" name="name" value="<?php echo(htmlspecialchars($row[1])); ?>"></TD>
 		<TD><input type="CHECKBOX" name="admin" <?php echo(($row[2] == 1) ? "checked" : ""); ?>></TD>
-		<TD><input type="CHECKBOX" name="kam" <?php echo(($row[3] == 1) ? "checked" : ""); ?>></TD>
-		<TD><input type="CHECKBOX" name="oz" <?php echo(($row[4] == 1) ? "checked" : ""); ?>></TD>
-		<TD><input type="text" name="login" value="<?php echo(htmlspecialchars($row[5])); ?>"></TD>
-		<TD><input type="text" name="password" value="<?php echo(htmlspecialchars($row[6])); ?>"></TD>
+		<TD><input type="CHECKBOX" name="boss" <?php echo(($row[3] == 1) ? "checked" : ""); ?>></TD>
+		<TD><input type="CHECKBOX" name="worker" <?php echo(($row[4] == 1) ? "checked" : ""); ?>></TD>
+		<TD><input type="text" name="flogin" value="<?php echo(htmlspecialchars($row[5])); ?>"></TD>
+		<TD><input type="text" name="fpassword" value="<?php echo(htmlspecialchars($row[6])); ?>"></TD>
 		<TD><INPUT type = "submit" name= "change" value="Upravit"></TD>
 		<TD><INPUT type = "submit" name= "delete" value="Smazat"></TD>
 	</TR>
@@ -108,10 +108,10 @@ Nejste vůbec přihlášen.
 		<TD><?php echo($row[0] + 1); ?><input type = "hidden" name = "id" value = "<?php echo($row[0] + 1); ?>"></TD>
 		<TD><input type="text" name="name" value=""></TD>
 		<TD><input type="CHECKBOX" name="admin"></TD>
-		<TD><input type="CHECKBOX" name="kam"></TD>
-		<TD><input type="CHECKBOX" name="oz" checked></TD>
-		<TD><input type="text" name="login" value=""></TD>
-		<TD><input type="text" name="password" value=""></TD>
+		<TD><input type="CHECKBOX" name="boss"></TD>
+		<TD><input type="CHECKBOX" name="worker" checked></TD>
+		<TD><input type="text" name="flogin" value=""></TD>
+		<TD><input type="text" name="fpassword" value=""></TD>
 		<TD colspan="2"><INPUT type = "submit" name = "new" value="Nový"></TD>
 
 	</TR>
