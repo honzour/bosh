@@ -12,6 +12,13 @@ function htmlHeader($title) {
 
 }
 
+function errorHeader($code, $desc) {
+		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+		header($protocol . ' ' . $code . ' ' . $desc);
+		die("Error $code, $desc");
+}
+
+
 $cookie_expire = time() + 86400 * 30;
 $cookie_path = "/";
 
