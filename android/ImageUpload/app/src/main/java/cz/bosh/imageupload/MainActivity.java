@@ -34,6 +34,7 @@ public class MainActivity extends Activity {
     private TextView mLatitude;
     private TextView mAccuracy;
     private TextView mNote;
+    private TextView mNote2;
     private View mUploadButton;
     private View mProgressBar;
     private Spinner mShop;
@@ -152,14 +153,19 @@ public class MainActivity extends Activity {
 
     protected void prepareAndStartPost() {
         Map<String, String> map = new HashMap<String, String>(2);
+        /*
         map.put("lon", String.valueOf(lon));
         map.put("lat", String.valueOf(lat));
         map.put("acc", String.valueOf(acc));
+
+        TODO shop, login, password
+        */
         map.put("note", mNote.getText().toString());
+        map.put("note", mNote2.getText().toString());
 
         ImageApplication.isPostRunning = true;
         setThreadControls();
-        new PostThread("http://backpropagation.wz.cz/bosh/add.php", map, ImageApplication.currentPhotoPath).start();
+        new PostThread(Settings.URL_BASE + Settings.URL_END_ADD, map, ImageApplication.currentPhotoPath).start();
     }
 
     @Override
