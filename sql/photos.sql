@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.55, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.57, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: bosh
 -- ------------------------------------------------------
--- Server version	5.5.55-0+deb8u1
+-- Server version	5.5.57-0+deb8u1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -26,7 +26,7 @@ CREATE TABLE `brands` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -35,6 +35,7 @@ CREATE TABLE `brands` (
 
 LOCK TABLES `brands` WRITE;
 /*!40000 ALTER TABLE `brands` DISABLE KEYS */;
+INSERT INTO `brands` VALUES (35,'COOP'),(36,'Datart');
 /*!40000 ALTER TABLE `brands` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -49,8 +50,8 @@ CREATE TABLE `people` (
   `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `admin` tinyint(1) DEFAULT NULL,
-  `kam` tinyint(1) DEFAULT NULL,
-  `oz` tinyint(1) DEFAULT NULL,
+  `boss` tinyint(1) DEFAULT NULL,
+  `worker` tinyint(1) DEFAULT NULL,
   `login` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -63,6 +64,7 @@ CREATE TABLE `people` (
 
 LOCK TABLES `people` WRITE;
 /*!40000 ALTER TABLE `people` DISABLE KEYS */;
+INSERT INTO `people` VALUES (1,'Jan Čarný',0,1,1,'honza','pivo'),(2,'Karel Otrokář',0,0,1,'karel','sluha'),(3,'Josef Sluha',0,0,1,'josef','sluzka'),(4,'Jan Němec',1,1,1,'honzour','korinek');
 /*!40000 ALTER TABLE `people` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -75,17 +77,15 @@ DROP TABLE IF EXISTS `photos`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `photos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `lon` double DEFAULT NULL,
-  `lat` double DEFAULT NULL,
-  `acc` double DEFAULT NULL,
   `photo` longblob,
   `note` varchar(255) DEFAULT NULL,
   `note2` varchar(255) DEFAULT NULL,
   `istourplan` tinyint(1) DEFAULT NULL,
   `isorder` tinyint(1) DEFAULT NULL,
   `savedtime` datetime DEFAULT NULL,
+  `shop` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -106,8 +106,8 @@ DROP TABLE IF EXISTS `shops`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `shops` (
   `id` int(11) NOT NULL,
-  `kam` int(11) NOT NULL,
-  `oz` int(11) NOT NULL,
+  `boss` int(11) DEFAULT NULL,
+  `worker` int(11) DEFAULT NULL,
   `brand` int(11) NOT NULL,
   `city` varchar(255) NOT NULL,
   `street` varchar(255) NOT NULL,
@@ -123,6 +123,7 @@ CREATE TABLE `shops` (
 
 LOCK TABLES `shops` WRITE;
 /*!40000 ALTER TABLE `shops` DISABLE KEYS */;
+INSERT INTO `shops` VALUES (1,1,2,35,'Kozolupy','Bubovická 7',14.25,50.325),(2,1,3,35,'Nelahozeves','Bedřicha Smetany 3',14.17,50.254),(3,1,1,36,'Praha 1','Národní třída 1',14.1,50.01);
 /*!40000 ALTER TABLE `shops` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -135,4 +136,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-07-31 21:59:39
+-- Dump completed on 2017-09-22  5:01:40
