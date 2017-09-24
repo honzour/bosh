@@ -213,8 +213,8 @@ public class PostThread extends Thread {
             @Override
             public void run() {
                 Toast.makeText(ImageApplication.imageApplication, result, Toast.LENGTH_LONG).show();
-                if (ImageApplication.mainActivity != null) {
-                    ImageApplication.mainActivity.onPostFinished();
+                if (ImageApplication.imageActivity != null) {
+                    ImageApplication.imageActivity.onPostFinished();
                 }
             }
         });
