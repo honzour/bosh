@@ -26,6 +26,6 @@ public class ImageApplication extends Application {
 
         final SharedPreferences prefs = getSharedPreferences(Settings.PREFS, Context.MODE_PRIVATE);
         login = prefs.getString(Settings.PREFS_LOGIN, null);
-        password = prefs.getString(Settings.PREFS_LOGIN, null);
+        password = prefs.getString(Settings.PREFS_PASSWORD, null);
     }
 }

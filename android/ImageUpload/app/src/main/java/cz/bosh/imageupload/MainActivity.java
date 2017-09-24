@@ -1,7 +1,10 @@
 package cz.bosh.imageupload;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -12,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -32,9 +36,45 @@ public class MainActivity extends Activity {
     private View mLogin;
     private View mPhoto;
 
+    private static final int DIALOG_LOGIN = 1;
 
     protected void login() {
+        showDialog(DIALOG_LOGIN);
+    }
 
+    @Override
+    protected Dialog onCreateDialog(int id)
+    {
+        final LayoutInflater inflater = getLayoutInflater();
+        final View view = inflater.inflate(R.layout.login, null);
+        final TextView login = (TextView)view.findViewById(R.id.login_login);
+        final TextView password = (TextView)view.findViewById(R.id.login_password);
+
+        login.setText(ImageApplication.login);
+        password.setText(ImageApplication.password);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        return builder.setTitle(R.string.login).
+                setPositiveButton(R.string.login, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        final String loginText = login.getText().toString();
+                        final String passwordText = password.getText().toString();
+
+                        final SharedPreferences prefs = getSharedPreferences(Settings.PREFS, Context.MODE_PRIVATE);
+                        final SharedPreferences.Editor edit = prefs.edit();
+                        edit.putString(Settings.PREFS_LOGIN, loginText);
+                        edit.putString(Settings.PREFS_PASSWORD, passwordText);
+                        edit.commit();
+                        ImageApplication.login = loginText;
+                        ImageApplication.password = passwordText;
+
+                        // TODO login
+                    }
+                }).
+                setNegativeButton(R.string.cancel, null).
+                setView(view).create();
     }
 
     @Override
@@ -46,13 +86,23 @@ public class MainActivity extends Activity {
         mLogin = findViewById(R.id.main_login);
         mPhoto = findViewById(R.id.main_photo);
 
-
         if (ImageApplication.login == null) {
             mPhoto.setEnabled(false);
             login();
         }
 
-
+        mLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                login();
+            }
+        });
+        mPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ImageActivity.class));
+            }
+        });
     }
 
     @Override
@@ -60,5 +110,4 @@ public class MainActivity extends Activity {
         ImageApplication.mainActivity = null;
         super.onDestroy();
     }
-
 }
