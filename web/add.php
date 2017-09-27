@@ -39,26 +39,26 @@ include("utils.php");
 				$data = mysql_escape_string($data);
 				fclose($fp);
 
-				$r = mysql_query("INSERT INTO photos (photo, shop, note, note2, istourplan, isorder) VALUES (" . 
+				$r = mysql_query("INSERT INTO photos (photo, shop, note, note2, istourplan, isorder, savedtime) VALUES (" . 
 					"'" . $data .  "'," .
 					"'" . mysql_escape_string($_POST["shop"]) .  "', " .
 					"'" . mysql_escape_string($_POST["note"]) .  "', " .
 					"'" . mysql_escape_string($_POST["note2"]) .  "', " .
 					"'" . (isset($_POST["istourplan"]) ? 1 : 0) .  "', " .
 					"'" . (isset($_POST["isorder"]) ? 1 : 0) .  "'" .
-					")");
+					", NOW())");
 				if (!$r) {
 					errorHeader(500, "Cannot insert uploaded file into db " . mysql_error($db));
 				}
 			} else {
-				$r = mysql_query("INSERT INTO photos (photo, shop, note, note2, istourplan, isorder) VALUES (" . 
+				$r = mysql_query("INSERT INTO photos (photo, shop, note, note2, istourplan, isorder, savedtime) VALUES (" . 
 					"'', " . // photo
 					"'" . mysql_escape_string($_POST["shop"]) .  "', " .
 					"'" . mysql_escape_string($_POST["note"]) .  "', " .
 					"'" . mysql_escape_string($_POST["note2"]) .  "', " .
 					"'" . (isset($_POST["istourplan"]) ? 1 : 0) .  "', " .
 					"'" . (isset($_POST["isorder"]) ? 1 : 0) .  "'" .
-				")");
+				", NOW())");
 				if (!$r) {
 					fclose($fp);
 					errorHeader(500, "Cannot insert into db " . mysql_error($db));

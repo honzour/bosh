@@ -38,7 +38,7 @@ include("utils.php");
 			mysql_query("DELETE FROM photos WHERE id = '" . $id . "'", $db);
 		}
 
-		$result = mysql_query("SELECT p.id, p.photo, p.note, p.note2, p.istourplan, p.isorder, concat_ws(', ', b.name, s.street, s.city) FROM photos p left join shops s on s.id = p.shop left join brands b on b.id = s.brand", $db);
+		$result = mysql_query("SELECT p.id, p.photo, p.note, p.note2, p.istourplan, p.isorder, concat_ws(', ', b.name, s.street, s.city), p.savedtime FROM photos p left join shops s on s.id = p.shop left join brands b on b.id = s.brand order by p.savedtime desc", $db);
 		if (!$result) {
 			echo(mysql_error());
 		}
@@ -54,6 +54,7 @@ include("utils.php");
         echo("koment k promotérovi: " . htmlspecialchars($row[3]) . "<BR><BR>\n");
         echo("tourplan: " . ($row[4] ? "ano" : "ne") . "<BR><BR>\n");
         echo("objednávka: " . ($row[5] ? "ano" : "ne") . "<BR><BR>\n");
+        echo("čas: " . htmlspecialchars($row[7]) . "<BR><BR>\n");
 		echo("<IMG src=\"data:image/png;base64,". base64_encode($row[1]) ."\" alt=\"fotka\"><BR>\n");
 		echo("<A href=\"index.php?action=delete&amp;id=" . $row[0] ."\">smazat</A>\n<BR><BR>");
 ?>
