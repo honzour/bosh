@@ -21,7 +21,7 @@ public class ImageApplication extends Application {
     public static String login;
     public static String password;
 
-    public static List<String> csv = null;
+    private static List<String> csv = null;
 
     @Override
     public void onCreate() {
@@ -31,6 +31,10 @@ public class ImageApplication extends Application {
         final SharedPreferences prefs = getSharedPreferences(Settings.PREFS, Context.MODE_PRIVATE);
         login = prefs.getString(Settings.PREFS_LOGIN, null);
         password = prefs.getString(Settings.PREFS_PASSWORD, null);
+        String csvText = prefs.getString(Settings.PREFS_CSV, null);
+        if (csvText != null) {
+            parseCsv(csvText);
+        }
     }
 
     public static synchronized void parseCsv(String text) {
@@ -39,6 +43,10 @@ public class ImageApplication extends Application {
         for (String line : lines) {
             csv.add(line);
         }
+    }
 
+    public static synchronized  List<String> getCsv() {
+        // TODO copy?
+        return csv;
     }
 }

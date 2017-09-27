@@ -72,14 +72,14 @@ public class ImageUploadPostThread extends Thread {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
 
-            final int maxWidth = 640;
-            final int maxHeight = 480;
+            final int maxWidth = 320;
+            final int maxHeight = 240;
 
             BitmapFactory.decodeFile(mPathToImage, options);
 
             if (options.outWidth > maxWidth || options.outHeight > maxHeight) {
 
-                options.inSampleSize = calculateInSampleSize(options, 640, 480);
+                options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
                 options.inJustDecodeBounds = false;
 
                 Bitmap smaller_bm = BitmapFactory.decodeFile(mPathToImage, options);

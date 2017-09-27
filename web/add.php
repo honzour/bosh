@@ -25,7 +25,7 @@ include("utils.php");
 
 			if ($filesize > 1024 * 1024) {
 				fclose($fp);
-				errorHeader(406, "File too long");
+				errorHeader(406, "File too long: " . $filesize);
 			}
 
 			$bufsize = 131072;

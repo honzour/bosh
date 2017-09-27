@@ -58,20 +58,12 @@ public class ImageActivity extends Activity {
         }
     }
 
-    protected void login() {
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ImageApplication.imageActivity = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image);
-
-        if (ImageApplication.login == null) {
-
-        }
-
 
         mLongitude = (TextView) findViewById(R.id.image_longitude);
         mLatitude = (TextView) findViewById(R.id.image_latitude);
@@ -81,11 +73,12 @@ public class ImageActivity extends Activity {
         mProgressBar = findViewById(R.id.image_progress);
         mShop = (Spinner) findViewById(R.id.image_shop);
 
-        List<String> list = new ArrayList<String>(3);
-        // TODO
-        list.add("Obchod 1");
-        list.add("Obchod 2");
-        list.add("Obchod 3");
+        List<String> csv = ImageApplication.getCsv();
+
+        List<String> list = new ArrayList<String>(csv.size());
+        for (String line : csv) {
+            list.add(line);
+        }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -115,8 +108,6 @@ public class ImageActivity extends Activity {
                 mLongitude.setText(String.valueOf(lon));
                 mLatitude.setText(String.valueOf(lat));
                 mAccuracy.setText(String.valueOf(acc));
-
-
             }
 
             @Override
@@ -163,14 +154,11 @@ public class ImageActivity extends Activity {
     }
 
     protected void prepareAndStartPost() {
-        Map<String, String> map = new HashMap<String, String>(2);
-        /*
-        map.put("lon", String.valueOf(lon));
-        map.put("lat", String.valueOf(lat));
-        map.put("acc", String.valueOf(acc));
+        Map<String, String> map = new HashMap<String, String>(5);
 
-        TODO shop, login, password
-        */
+        map.put("login", ImageApplication.login);
+        map.put("password", ImageApplication.password);
+        map.put("shop", String.valueOf(mShop.getSelectedItemId()));
         map.put("note", mNote.getText().toString());
         map.put("note", mNote2.getText().toString());
 

@@ -10,7 +10,7 @@ include("utils.php");
 	mysql_select_db($db_db, $db);
 	
 	if ((array_key_exists("login", $_POST))) {
-		$query = "select concat_ws(',', b.name, s.city, s.street, s.lon, s.lat) from shops s left join brands b on s.brand = b.id left join people p on p.id = s.worker where p.login='" .
+		$query = "select concat_ws(',', b.name, s.street, s.city, s.id, s.lon, s.lat) from shops s left join brands b on s.brand = b.id left join people p on p.id = s.worker where p.login='" .
 			mysql_escape_string($_POST["login"]) . "'and p.password='" . mysql_escape_string($_POST["password"]) . "' order by s.id";
 	} else {
 		$query = "select concat_ws(', ', s.boss, k.name, s.worker, o.name, b.name, s.id, s.city, s.street, s.lon, s.lat) from shops s left join brands b on b.id = s.brand left join people k on k.id = s.boss left join people o on o.id = s.worker order by s.id";

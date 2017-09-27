@@ -43,12 +43,11 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    protected Dialog onCreateDialog(int id)
-    {
+    protected Dialog onCreateDialog(int id) {
         final LayoutInflater inflater = getLayoutInflater();
         final View view = inflater.inflate(R.layout.login, null);
-        final TextView login = (TextView)view.findViewById(R.id.login_login);
-        final TextView password = (TextView)view.findViewById(R.id.login_password);
+        final TextView login = (TextView) view.findViewById(R.id.login_login);
+        final TextView password = (TextView) view.findViewById(R.id.login_password);
 
         login.setText(ImageApplication.login);
         password.setText(ImageApplication.password);
