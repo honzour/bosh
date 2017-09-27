@@ -12,5 +12,6 @@ public class Settings {
     public static final String PREFS = "SHOPVISIT_PREFS";
     public static final String PREFS_LOGIN = "LOGIN";
     public static final String PREFS_PASSWORD = "PASSWORD";
+    public static final String PREFS_CSV = "CSV";
 
 }

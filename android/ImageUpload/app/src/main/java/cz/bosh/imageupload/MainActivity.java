@@ -70,7 +70,11 @@ public class MainActivity extends Activity {
                         ImageApplication.login = loginText;
                         ImageApplication.password = passwordText;
 
-                        // TODO login
+                        Map<String, String> map = new HashMap<String, String>();
+                        map.put("login", loginText);
+                        map.put("password", passwordText);
+
+                        new CsvDownloadPostThread(Settings.URL_BASE + Settings.URL_END_CSV, map).start();
                     }
                 }).
                 setNegativeButton(R.string.cancel, null).
@@ -109,5 +113,9 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         ImageApplication.mainActivity = null;
         super.onDestroy();
+    }
+
+    public void onPostFinished() {
+        // TODO
     }
 }

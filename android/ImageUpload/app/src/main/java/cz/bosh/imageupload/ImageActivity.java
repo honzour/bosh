@@ -3,7 +3,6 @@ package cz.bosh.imageupload;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -177,7 +176,7 @@ public class ImageActivity extends Activity {
 
         ImageApplication.isPostRunning = true;
         setThreadControls();
-        new PostThread(Settings.URL_BASE + Settings.URL_END_ADD, map, ImageApplication.currentPhotoPath).start();
+        new ImageUploadPostThread(Settings.URL_BASE + Settings.URL_END_ADD, map, ImageApplication.currentPhotoPath).start();
     }
 
     @Override

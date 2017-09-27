@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,6 +21,8 @@ public class ImageApplication extends Application {
     public static String login;
     public static String password;
 
+    public static List<String> csv = null;
+
     @Override
     public void onCreate() {
         imageApplication = this;
@@ -27,5 +31,14 @@ public class ImageApplication extends Application {
         final SharedPreferences prefs = getSharedPreferences(Settings.PREFS, Context.MODE_PRIVATE);
         login = prefs.getString(Settings.PREFS_LOGIN, null);
         password = prefs.getString(Settings.PREFS_PASSWORD, null);
+    }
+
+    public static synchronized void parseCsv(String text) {
+        String[] lines = text.split("\n");
+        csv = new ArrayList<String>(lines.length);
+        for (String line : lines) {
+            csv.add(line);
+        }
+
     }
 }

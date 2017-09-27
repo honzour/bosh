@@ -26,14 +26,14 @@ import java.util.Map;
  * Created by honza on 15.5.17.
  */
 
-public class PostThread extends Thread {
+public class ImageUploadPostThread extends Thread {
 
     protected String mUrl;
     protected Map<String, String> mPostArgs;
     protected String mPathToImage;
     protected Handler mHandler;
 
-    public PostThread(String url, Map<String, String> postArgs, String pathToImage) {
+    public ImageUploadPostThread(String url, Map<String, String> postArgs, String pathToImage) {
         super();
         mUrl = url;
         mPostArgs = postArgs;
@@ -150,60 +150,6 @@ public class PostThread extends Thread {
             return  e.toString();
         }
 
-    }
-
-
-    protected String doPost() {
-
-        try {
-
-            URL obj = new URL(mUrl);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-            //add reuqest header
-            con.setRequestMethod("POST");
-            con.setRequestProperty("User-Agent", "Muj Browser");
-            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-
-            StringBuffer urlParameters = new StringBuffer();
-            for (Map.Entry<String, String> entry : mPostArgs.entrySet()) {
-
-                if (urlParameters.length() > 0) {
-                    urlParameters.append('&');
-                }
-
-                urlParameters.append(entry.getKey());
-                urlParameters.append('=');
-                urlParameters.append(entry.getValue());
-            }
-
-            // Send post request
-            con.setDoOutput(true);
-            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-            wr.writeBytes(urlParameters.toString());
-            wr.flush();
-            wr.close();
-
-            int responseCode = con.getResponseCode();
-
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-
-             return ImageApplication.imageApplication.getResources().getText(R.string.server_response) + String.valueOf(responseCode);
-
-        }
-        catch (Exception e) {
-            return  e.toString();
-        }
     }
 
     @Override
