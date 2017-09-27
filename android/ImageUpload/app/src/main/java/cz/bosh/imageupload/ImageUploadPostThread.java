@@ -5,13 +5,12 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -67,33 +66,34 @@ public class ImageUploadPostThread extends Thread {
     protected String doPostWithImage() {
 
         try {
-
-
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
 
-            final int maxWidth = 320;
-            final int maxHeight = 240;
+            final int maxWidth = 640;
+            final int maxHeight = 480;
 
-            BitmapFactory.decodeFile(mPathToImage, options);
-
-            if (options.outWidth > maxWidth || options.outHeight > maxHeight) {
-
-                options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
-                options.inJustDecodeBounds = false;
-
-                Bitmap smaller_bm = BitmapFactory.decodeFile(mPathToImage, options);
-                new File(mPathToImage).delete();
-                File small_picture = new File(mPathToImage);
-                FileOutputStream fOut = new FileOutputStream(small_picture);
-
-                smaller_bm.compress(Bitmap.CompressFormat.JPEG, 80, fOut);
-                fOut.flush();
-                fOut.close();
-                smaller_bm.recycle();
+            do {
+                BitmapFactory.decodeFile(mPathToImage, options);
+                if (options.outWidth < 0)
+                    Thread.sleep(100);
             }
+            while (options.outWidth < 0);
 
-            File binaryFile = new File(mPathToImage);
+            options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
+            options.inJustDecodeBounds = false;
+
+            Bitmap smaller_bm = BitmapFactory.decodeFile(mPathToImage, options);
+
+            File f = new File(mPathToImage);
+            String name = f.getName();
+            f.delete();
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            smaller_bm.compress(Bitmap.CompressFormat.JPEG, 80, out);
+            smaller_bm.recycle();
+
+            byte[] b = out.toByteArray();
+
 
             String boundary = Long.toHexString(System.currentTimeMillis()); // Just generate some unique random value.
             String CRLF = "\r\n"; // Line separator required by multipart/form-data.
@@ -118,13 +118,13 @@ public class ImageUploadPostThread extends Thread {
 
             // Send binary file.
             writer.append("--" + boundary).append(CRLF);
-            writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"" + binaryFile.getName() + "\"").append(CRLF);
-            writer.append("Content-Type: " + URLConnection.guessContentTypeFromName(binaryFile.getName())).append(CRLF);
+            writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"" + name + "\"").append(CRLF);
+            writer.append("Content-Type: " + URLConnection.guessContentTypeFromName(name)).append(CRLF);
             writer.append("Content-Transfer-Encoding: binary").append(CRLF);
             writer.append(CRLF).flush();
 
 
-            InputStream input = new FileInputStream(binaryFile);
+            InputStream input = new ByteArrayInputStream(b);
 
             byte[] buffer = new byte[1024];
             int bytesRead;
@@ -143,9 +143,8 @@ public class ImageUploadPostThread extends Thread {
 
             int responseCode = ((HttpURLConnection) connection).getResponseCode();
             String responseMessage = ((HttpURLConnection) connection).getResponseMessage();
-            new File(mPathToImage).delete();
 
-            return  ImageApplication.imageApplication.getResources().getText(R.string.server_response).toString() + String.valueOf(responseCode) + " " + responseMessage ;
+            return  ImageApplication.imageApplication.getResources().getText(R.string.server_response).toString() + String.valueOf(responseCode) + " " + responseMessage;
         } catch (Exception e) {
             return  e.toString();
         }
