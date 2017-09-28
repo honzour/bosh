@@ -69,7 +69,7 @@ public class ImageActivity extends Activity {
         mLatitude = (TextView) findViewById(R.id.image_latitude);
         mAccuracy = (TextView) findViewById(R.id.image_accuracy);
         mNote = (TextView) findViewById(R.id.image_note);
-        mNote2 = (TextView) findViewById(R.id.image_note);
+        mNote2 = (TextView) findViewById(R.id.image_note2);
         mProgressBar = findViewById(R.id.image_progress);
         mShop = (Spinner) findViewById(R.id.image_shop);
 
@@ -160,7 +160,7 @@ public class ImageActivity extends Activity {
         map.put("password", ImageApplication.password);
         map.put("shop", String.valueOf(mShop.getSelectedItemId()));
         map.put("note", mNote.getText().toString());
-        map.put("note", mNote2.getText().toString());
+        map.put("note2", mNote2.getText().toString());
 
         ImageApplication.isPostRunning = true;
         setThreadControls();
