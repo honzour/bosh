@@ -158,7 +158,12 @@ public class ImageActivity extends Activity {
 
         map.put("login", ImageApplication.login);
         map.put("password", ImageApplication.password);
-        map.put("shop", String.valueOf(mShop.getSelectedItemId()));
+
+        int pos = mShop.getSelectedItemPosition();
+        String shop = ImageApplication.getCsv().get(pos);
+        String[] data = shop.split(",");
+
+        map.put("shop", data[3]);
         map.put("note", mNote.getText().toString());
         map.put("note2", mNote2.getText().toString());
 
