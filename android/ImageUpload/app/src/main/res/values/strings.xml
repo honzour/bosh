@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Image Upload</string>
-    <string name="upload_photo">Upload photo</string>
+    <string name="upload_photo">Upload</string>
     <string name="no_gps">No access to GPS</string>
     <string name="longitude">Longitude:</string>
     <string name="latitude">Latitude:</string>
@@ -14,4 +14,5 @@
     <string name="cancel">Cancel</string>
     <string name="photo">Photo</string>
     <string name="photodot">Photo:</string>
+    <string name="shop">Shop:</string>
 </resources>

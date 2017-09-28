@@ -3,6 +3,8 @@ package cz.bosh.imageupload;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,12 +15,14 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,6 +42,7 @@ public class ImageActivity extends Activity {
     private View mUploadButton;
     private View mProgressBar;
     private Spinner mShop;
+    private ImageView mImage;
 
     private static double lon = 0;
     private static double lat = 0;
@@ -72,6 +77,14 @@ public class ImageActivity extends Activity {
         mNote2 = (TextView) findViewById(R.id.image_note2);
         mProgressBar = findViewById(R.id.image_progress);
         mShop = (Spinner) findViewById(R.id.image_shop);
+        mImage = (ImageView) findViewById(R.id.image_image);
+
+        mImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startCamera();
+            }
+        });
 
         List<String> csv = ImageApplication.getCsv();
 
@@ -92,7 +105,8 @@ public class ImageActivity extends Activity {
         mUploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startCamera();
+                Toast.makeText(ImageApplication.imageApplication, R.string.sending_gps , Toast.LENGTH_LONG).show();
+                prepareAndStartPost();
             }
         });
 
@@ -179,8 +193,15 @@ public class ImageActivity extends Activity {
             return;
         if (resultCode != RESULT_OK)
             return;
-        Toast.makeText(ImageApplication.imageApplication, R.string.sending_gps , Toast.LENGTH_LONG).show();
-        prepareAndStartPost();
+        //
+        try {
+            Bitmap bmp = ImageUploadPostThread.decodeBitmap();
+            mImage.setImageBitmap(bmp);
+        } catch (InterruptedException e) {
+
+        }
+     //   Toast.makeText(ImageApplication.imageApplication, R.string.sending_gps , Toast.LENGTH_LONG).show();
+     //   prepareAndStartPost();
     }
 
     private static File getAlbumDir() {

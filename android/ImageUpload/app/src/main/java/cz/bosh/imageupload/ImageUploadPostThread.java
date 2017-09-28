@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -40,7 +41,7 @@ public class ImageUploadPostThread extends Thread {
         mHandler = new Handler();
     }
 
-    public int calculateInSampleSize(
+    public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
@@ -63,26 +64,31 @@ public class ImageUploadPostThread extends Thread {
         return inSampleSize;
     }
 
+    public static Bitmap decodeBitmap() throws InterruptedException {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        final int maxWidth = 640;
+        final int maxHeight = 480;
+
+        do {
+            BitmapFactory.decodeFile(ImageApplication.currentPhotoPath, options);
+            if (options.outWidth < 0)
+                Thread.sleep(100);
+        }
+        while (options.outWidth < 0);
+
+        options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
+        options.inJustDecodeBounds = false;
+
+        Bitmap smaller_bm = BitmapFactory.decodeFile(ImageApplication.currentPhotoPath, options);
+        return smaller_bm;
+    }
+
     protected String doPostWithImage() {
 
         try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-
-            final int maxWidth = 640;
-            final int maxHeight = 480;
-
-            do {
-                BitmapFactory.decodeFile(mPathToImage, options);
-                if (options.outWidth < 0)
-                    Thread.sleep(100);
-            }
-            while (options.outWidth < 0);
-
-            options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
-            options.inJustDecodeBounds = false;
-
-            Bitmap smaller_bm = BitmapFactory.decodeFile(mPathToImage, options);
+            Bitmap smaller_bm = decodeBitmap();
 
             File f = new File(mPathToImage);
             String name = f.getName();
