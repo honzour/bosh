@@ -32,10 +32,20 @@ import java.util.Map;
 
 public class ImageActivity extends Activity {
 
+    class SelectItem {
+        public int index;
+        public double lon;
+        public double lat;
+
+        public SelectItem(int index, double lon, double lat) {
+            this.index = index;
+            this.lon = lon;
+            this.lat = lat;
+        }
+    }
+
     private LocationManager mlocManager;
     private LocationListener mlocListener;
-    private TextView mLongitude;
-    private TextView mLatitude;
     private TextView mAccuracy;
     private TextView mNote;
     private TextView mNote2;
@@ -43,6 +53,8 @@ public class ImageActivity extends Activity {
     private View mProgressBar;
     private Spinner mShop;
     private ImageView mImage;
+
+    private List<SelectItem> mShopData;
 
     private static double lon = 0;
     private static double lat = 0;
@@ -70,8 +82,6 @@ public class ImageActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image);
 
-        mLongitude = (TextView) findViewById(R.id.image_longitude);
-        mLatitude = (TextView) findViewById(R.id.image_latitude);
         mAccuracy = (TextView) findViewById(R.id.image_accuracy);
         mNote = (TextView) findViewById(R.id.image_note);
         mNote2 = (TextView) findViewById(R.id.image_note2);
@@ -88,8 +98,25 @@ public class ImageActivity extends Activity {
 
         List<String> csv = ImageApplication.getCsv();
 
-        List<String> list = new ArrayList<String>(csv.size());
+        List<String> list = new ArrayList<String>(csv.size() + 1);
+        mShopData = new ArrayList<SelectItem>(list.size() + 1);
+
+        mShopData.add(null);
+        list.add("----------------------------");
+
         for (String line : csv) {
+            SelectItem si = null;
+            try {
+                String[] fields = line.split(",");
+                line = fields[0] + ',' + fields[1] + ',' + fields[2];
+                si = new SelectItem(Integer.valueOf(fields[3]), Double.valueOf(fields[4]), Double.valueOf(fields[5]));
+            } catch (Exception e) {
+                continue;
+                // TODO
+            }
+
+            mShopData.add(si);
+            mShopData.add(si);
             list.add(line);
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -119,9 +146,31 @@ public class ImageActivity extends Activity {
                 lat = location.getLatitude();
                 acc = location.getAccuracy();
 
-                mLongitude.setText(String.valueOf(lon));
-                mLatitude.setText(String.valueOf(lat));
-                mAccuracy.setText(String.valueOf(acc));
+                String descLon = String.valueOf(lon);
+                if (descLon.length() > 5) descLon = descLon.substring(0, 5);
+
+                String descLat = String.valueOf(lat);
+                if (descLat.length() > 5) descLat = descLat.substring(0, 5);
+
+                String descAcc = String.valueOf(acc);
+                if (descAcc.length() > 5) descAcc = descAcc.substring(0, 5);
+
+                mAccuracy.setText(descLon + "°/" + descLat + "°/" + descAcc + 'm');
+
+
+                double min = -1;
+                int index = -1;
+                for (int i = 1; i< mShopData.size(); i++) {
+                    SelectItem si = mShopData.get(i);
+                    double dist = (si.lat - lat) * (si.lat - lat) + (si.lon - lon) * (si.lon - lon);
+                    if (min < 0 || dist < min) {
+                        min = dist;
+                        index = i;
+                    }
+                }
+                if (index > 0) {
+                    mShop.setSelection(index);
+                }
             }
 
             @Override
@@ -163,6 +212,7 @@ public class ImageActivity extends Activity {
         }
         else
         {
+            // TODO min time
             mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
         }
     }
@@ -174,10 +224,10 @@ public class ImageActivity extends Activity {
         map.put("password", ImageApplication.password);
 
         int pos = mShop.getSelectedItemPosition();
-        String shop = ImageApplication.getCsv().get(pos);
-        String[] data = shop.split(",");
 
-        map.put("shop", data[3]);
+        SelectItem si = mShopData.get(mShop.getSelectedItemPosition());
+
+        map.put("shop", String.valueOf(si == null ? -1 : si.index));
         map.put("note", mNote.getText().toString());
         map.put("note2", mNote2.getText().toString());
 
@@ -200,9 +250,7 @@ public class ImageActivity extends Activity {
         } catch (InterruptedException e) {
 
         }
-     //   Toast.makeText(ImageApplication.imageApplication, R.string.sending_gps , Toast.LENGTH_LONG).show();
-     //   prepareAndStartPost();
-    }
+     }
 
     private static File getAlbumDir() {
         File storageDir = null;

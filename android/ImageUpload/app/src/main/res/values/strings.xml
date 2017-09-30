@@ -4,11 +4,12 @@
     <string name="no_gps">No access to GPS</string>
     <string name="longitude">Longitude:</string>
     <string name="latitude">Latitude:</string>
-    <string name="accuracy">Accuracy:</string>
+    <string name="position">Position:</string>
     <string name="unknown">unknown</string>
     <string name="sending_gps">Sending GPS coordinates..."</string>
     <string name="server_response">Server response: </string>
     <string name="note">Note: </string>
+    <string name="comment">Comment: </string>
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="cancel">Cancel</string>
