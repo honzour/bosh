@@ -15,6 +15,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -53,6 +54,7 @@ public class ImageActivity extends Activity {
     private View mProgressBar;
     private Spinner mShop;
     private ImageView mImage;
+    private CheckBox mUseGps;
 
     private List<SelectItem> mShopData;
 
@@ -88,6 +90,7 @@ public class ImageActivity extends Activity {
         mProgressBar = findViewById(R.id.image_progress);
         mShop = (Spinner) findViewById(R.id.image_shop);
         mImage = (ImageView) findViewById(R.id.image_image);
+        mUseGps = (CheckBox) findViewById(R.id.image_use_gps);
 
         mImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +123,7 @@ public class ImageActivity extends Activity {
             list.add(line);
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, list);
+                R.layout.select_item, list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mShop.setAdapter(adapter);
 
@@ -157,19 +160,21 @@ public class ImageActivity extends Activity {
 
                 mAccuracy.setText(descLon + "°/" + descLat + "°/" + descAcc + 'm');
 
+                if (mUseGps.isChecked()) {
 
-                double min = -1;
-                int index = -1;
-                for (int i = 1; i< mShopData.size(); i++) {
-                    SelectItem si = mShopData.get(i);
-                    double dist = (si.lat - lat) * (si.lat - lat) + (si.lon - lon) * (si.lon - lon);
-                    if (min < 0 || dist < min) {
-                        min = dist;
-                        index = i;
+                    double min = -1;
+                    int index = -1;
+                    for (int i = 1; i < mShopData.size(); i++) {
+                        SelectItem si = mShopData.get(i);
+                        double dist = (si.lat - lat) * (si.lat - lat) + (si.lon - lon) * (si.lon - lon);
+                        if (min < 0 || dist < min) {
+                            min = dist;
+                            index = i;
+                        }
                     }
-                }
-                if (index > 0) {
-                    mShop.setSelection(index);
+                    if (index > 0) {
+                        mShop.setSelection(index);
+                    }
                 }
             }
 

@@ -11,9 +11,11 @@
     <string name="note">Note: </string>
     <string name="comment">Comment: </string>
     <string name="login">Login</string>
+    <string name="relogin">Update/Login</string>
     <string name="password">Password</string>
     <string name="cancel">Cancel</string>
     <string name="photo">Photo</string>
     <string name="photodot">Photo:</string>
     <string name="shop">Shop:</string>
+    <string name="use_gps">Use GPS</string>
 </resources>

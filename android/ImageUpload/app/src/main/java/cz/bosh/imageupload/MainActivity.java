@@ -18,6 +18,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +34,7 @@ import java.util.Map;
 
 public class MainActivity extends Activity {
 
-    private View mLogin;
+    private Button mLogin;
     private View mPhoto;
 
     private static final int DIALOG_LOGIN = 1;
@@ -86,7 +87,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        mLogin = findViewById(R.id.main_login);
+        mLogin = (Button)findViewById(R.id.main_login);
         mPhoto = findViewById(R.id.main_photo);
 
         if (ImageApplication.login == null) {
@@ -106,6 +107,15 @@ public class MainActivity extends Activity {
                 startActivity(new Intent(MainActivity.this, ImageActivity.class));
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        boolean isCsv = (ImageApplication.getCsv() != null);
+        mPhoto.setEnabled(isCsv);
+        mLogin.setText(isCsv ? R.string.relogin : R.string.login);
     }
 
     @Override
