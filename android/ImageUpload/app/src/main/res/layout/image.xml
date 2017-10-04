@@ -134,6 +134,18 @@
                     android:text="@string/upload_photo" />
 
             </TableRow>
+            <TableRow
+                android:gravity="center"
+                >
+                <Button
+                    android:layout_span="2"
+                    android:id="@+id/image_save_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/save" />
+
+            </TableRow>
+
         </TableLayout>
 
 

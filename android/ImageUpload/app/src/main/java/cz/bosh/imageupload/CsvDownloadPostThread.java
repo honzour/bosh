@@ -114,7 +114,7 @@ public class CsvDownloadPostThread extends Thread {
                     }
                 }
                 else {
-                    Toast.makeText(ImageApplication.imageApplication, resultFinal, Toast.LENGTH_LONG).show();
+                    Toast.makeText(ImageApplication.imageApplication, errorFinal, Toast.LENGTH_LONG).show();
                 }
             }
         });

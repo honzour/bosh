@@ -36,6 +36,7 @@ public class MainActivity extends Activity {
 
     private Button mLogin;
     private View mPhoto;
+    private View mSaved;
 
     private static final int DIALOG_LOGIN = 1;
 
@@ -89,9 +90,11 @@ public class MainActivity extends Activity {
 
         mLogin = (Button)findViewById(R.id.main_login);
         mPhoto = findViewById(R.id.main_photo);
+        mSaved = findViewById(R.id.main_saved);
 
         if (ImageApplication.login == null) {
             mPhoto.setEnabled(false);
+            mSaved.setEnabled(false);
             login();
         }
 
@@ -109,13 +112,17 @@ public class MainActivity extends Activity {
         });
     }
 
+    protected void setButtons() {
+        boolean isCsv = (ImageApplication.getCsv() != null);
+        mPhoto.setEnabled(isCsv);
+        mSaved.setEnabled(isCsv);
+        mLogin.setText(isCsv ? R.string.relogin : R.string.login);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-
-        boolean isCsv = (ImageApplication.getCsv() != null);
-        mPhoto.setEnabled(isCsv);
-        mLogin.setText(isCsv ? R.string.relogin : R.string.login);
+        setButtons();
     }
 
     @Override
@@ -125,6 +132,6 @@ public class MainActivity extends Activity {
     }
 
     public void onPostFinished() {
-        // TODO
+        setButtons();
     }
 }

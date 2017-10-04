@@ -22,7 +22,14 @@
             android:id="@+id/main_photo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/photo"
+            android:text="@string/upload_record"
+            />
+        <Button
+            android:layout_margin="10dp"
+            android:id="@+id/main_saved"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/saved_records"
             />
 
     </LinearLayout>
