@@ -106,7 +106,7 @@ public class ImageUploadPostThread extends Thread {
 
             File f = new File(mPathToImage);
             String name = f.getName();
-            f.delete();
+
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             smaller_bm.compress(Bitmap.CompressFormat.JPEG, 80, out);
@@ -164,6 +164,11 @@ public class ImageUploadPostThread extends Thread {
             int responseCode = ((HttpURLConnection) connection).getResponseCode();
             String responseMessage = ((HttpURLConnection) connection).getResponseMessage();
 
+            if (responseCode == 200) {
+                f.delete();
+                ImageApplication.currentPhotoPath = null;
+                return null;
+            }
             return  ImageApplication.imageApplication.getResources().getText(R.string.server_response).toString() + String.valueOf(responseCode) + " " + responseMessage;
         } catch (Exception e) {
             return  e.toString();
@@ -177,9 +182,18 @@ public class ImageUploadPostThread extends Thread {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(ImageApplication.imageApplication, result, Toast.LENGTH_LONG).show();
+
                 if (ImageApplication.imageActivity != null) {
                     ImageApplication.imageActivity.onPostFinished();
+                }
+
+                if (result == null) {
+                    if (ImageApplication.imageActivity != null) {
+                        Toast.makeText(ImageApplication.imageApplication, "Image uploaded", Toast.LENGTH_LONG).show();
+                        ImageApplication.imageActivity.finish();
+                    }
+                } else {
+                    Toast.makeText(ImageApplication.imageApplication, result, Toast.LENGTH_LONG).show();
                 }
             }
         });

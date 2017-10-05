@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -49,6 +50,7 @@ public class ImageActivity extends Activity {
     private TextView mNote;
     private TextView mNote2;
     private View mUploadButton;
+    private View mSaveButton;
     private View mProgressBar;
     private Spinner mShop;
     private ImageView mImage;
@@ -68,11 +70,10 @@ public class ImageActivity extends Activity {
     protected void setThreadControls() {
         if (ImageApplication.isPostRunning) {
             mProgressBar.setVisibility(View.VISIBLE);
-            mUploadButton.setEnabled(false);
         } else {
             mProgressBar.setVisibility(View.GONE);
-            mUploadButton.setEnabled(true);
-        }
+         }
+        updateButtons();
     }
 
 
@@ -81,6 +82,9 @@ public class ImageActivity extends Activity {
         ImageApplication.imageActivity = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image);
+
+        mUploadButton = findViewById(R.id.image_upload_button);
+        mSaveButton = findViewById(R.id.image_save_button);
 
         mAccuracy = (TextView) findViewById(R.id.image_accuracy);
         mNote = (TextView) findViewById(R.id.image_note);
@@ -127,7 +131,7 @@ public class ImageActivity extends Activity {
         mShop.setAdapter(adapter);
 
 
-        mUploadButton = findViewById(R.id.image_upload_button);
+
 
         setThreadControls();
 
@@ -192,6 +196,18 @@ public class ImageActivity extends Activity {
             }
 
         };
+
+        mShop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                updateButtons();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                updateButtons();
+            }
+        });
     }
 
     @Override
@@ -258,8 +274,8 @@ public class ImageActivity extends Activity {
         if (resultCode != RESULT_OK) {
             ImageApplication.currentPhotoPath = null;
         }
-        //
         updateImage();
+        updateButtons();
      }
 
     private static File getAlbumDir() {
@@ -320,5 +336,15 @@ public class ImageActivity extends Activity {
     public void onPostFinished() {
         ImageApplication.isPostRunning = false;
         setThreadControls();
+    }
+    public void updateButtons() {
+        if (ImageApplication.currentPhotoPath == null || ImageApplication.isPostRunning || mShop.getSelectedItemPosition() < 1) {
+            mUploadButton.setEnabled(false);
+            mSaveButton.setEnabled(false);
+        } else {
+            mUploadButton.setEnabled(true);
+            mSaveButton.setEnabled(true);
+        }
+
     }
 }
