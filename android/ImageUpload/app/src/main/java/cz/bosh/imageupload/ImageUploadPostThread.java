@@ -64,24 +64,38 @@ public class ImageUploadPostThread extends Thread {
         return inSampleSize;
     }
 
-    public static Bitmap decodeBitmap() throws InterruptedException {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
+    public static Bitmap decodeBitmap() {
+        if (ImageApplication.currentPhotoPath == null)
+            return null;
+        Bitmap smaller_bm = null;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
 
-        final int maxWidth = 640;
-        final int maxHeight = 480;
+            final int maxWidth = 640;
+            final int maxHeight = 480;
 
-        do {
-            BitmapFactory.decodeFile(ImageApplication.currentPhotoPath, options);
-            if (options.outWidth < 0)
-                Thread.sleep(100);
+            int iter = 0;
+            do {
+                BitmapFactory.decodeFile(ImageApplication.currentPhotoPath, options);
+                if (options.outWidth < 0)
+                    if (iter > 5)
+                        throw new RuntimeException("Cannot read photo");
+                    Thread.sleep(100);
+                    iter++;
+            }
+            while (options.outWidth < 0);
+
+            options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
+            options.inJustDecodeBounds = false;
+
+            smaller_bm = BitmapFactory.decodeFile(ImageApplication.currentPhotoPath, options);
+        } catch (Exception e) {
+            // ignore, use null value
         }
-        while (options.outWidth < 0);
-
-        options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
-        options.inJustDecodeBounds = false;
-
-        Bitmap smaller_bm = BitmapFactory.decodeFile(ImageApplication.currentPhotoPath, options);
+        if (smaller_bm == null) {
+            ImageApplication.currentPhotoPath = null;
+        }
         return smaller_bm;
     }
 

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -23,7 +22,6 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -91,6 +89,7 @@ public class ImageActivity extends Activity {
         mShop = (Spinner) findViewById(R.id.image_shop);
         mImage = (ImageView) findViewById(R.id.image_image);
         mUseGps = (CheckBox) findViewById(R.id.image_use_gps);
+        updateImage();
 
         mImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -230,7 +229,7 @@ public class ImageActivity extends Activity {
 
         int pos = mShop.getSelectedItemPosition();
 
-        SelectItem si = mShopData.get(mShop.getSelectedItemPosition());
+        SelectItem si = mShopData.get(pos);
 
         map.put("shop", String.valueOf(si == null ? -1 : si.index));
         map.put("note", mNote.getText().toString());
@@ -241,20 +240,26 @@ public class ImageActivity extends Activity {
         new ImageUploadPostThread(Settings.URL_BASE + Settings.URL_END_ADD, map, ImageApplication.currentPhotoPath).start();
     }
 
+    private void updateImage() {
+        Bitmap bmp = ImageUploadPostThread.decodeBitmap();
+        if (bmp != null) {
+            mImage.setImageBitmap(bmp);
+
+        } else {
+            mImage.setImageResource(android.R.drawable.ic_menu_camera);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode != RC_TAKE_PHOTO)
             return;
-        if (resultCode != RESULT_OK)
-            return;
-        //
-        try {
-            Bitmap bmp = ImageUploadPostThread.decodeBitmap();
-            mImage.setImageBitmap(bmp);
-        } catch (InterruptedException e) {
-
+        if (resultCode != RESULT_OK) {
+            ImageApplication.currentPhotoPath = null;
         }
+        //
+        updateImage();
      }
 
     private static File getAlbumDir() {
