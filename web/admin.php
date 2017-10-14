@@ -62,7 +62,7 @@ Nahrávám csv soubor...<BR>
 					$i++;
 					if (count($rows) <= $row + 1)
 						break;
-					$fields = explode(",", $data);
+					$fields = explode("$", $data);
 					if (count($fields) != 10) {
 						echo("Chyba na řádku " . ($row + 1) . ":<BR>" . htmlspecialchars($data));
 						echo("<BR>Musí jít o 10 csv oddělených údajů, ale je jich tam " . count($fields));
@@ -108,7 +108,7 @@ Nahrávám csv soubor...<BR>
 						$i++;
 						if (count($rows) <= $row + 1)
 							break;
-						$fields = explode(",", $data);
+						$fields = explode("$", $data);
 						$brand = mysql_escape_string(trim($fields[4]));
 						$res = mysql_query("select count(1) as cnt from brands where name = '$brand'");
 						if (!$res) {
@@ -138,7 +138,7 @@ Nahrávám csv soubor...<BR>
 						$i++;
 						if (count($rows) <= $row + 1)
 							break;
-						$fields = explode(",", $data);
+						$fields = explode("$", $data);
 						$person1_id = mysql_escape_string(trim($fields[0]));
 						$person1 = mysql_escape_string(trim($fields[1]));
 						$person2_id = mysql_escape_string(trim($fields[2]));
