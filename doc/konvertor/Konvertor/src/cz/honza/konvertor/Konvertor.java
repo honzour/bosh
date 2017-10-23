@@ -13,7 +13,7 @@ import java.io.UnsupportedEncodingException;
 public class Konvertor {
 	
 	
-	private static String line2line(String line, int index) {
+	private static String line2line1(String line, int index) {
 		String[] pole = line.split("\\$");
 		if (pole.length != 13)
 			throw new RuntimeException("Délka pole není 13 (řádek " + index + ")");
@@ -52,6 +52,65 @@ public class Konvertor {
 		
 		return sb.toString();
 	}
+	
+	private static String lonlat2lonlat(String s) {
+		String[] lonlat = s.replace("'", " ").replace("°", " ").replace("N", "").replace("E", "").replace("\"", "").split(",");
+		
+		for (int i = 0; i < 2; i++) {
+			lonlat[i] = lonlat[i].trim();
+			String[] hms = lonlat[i].split(" +");
+			lonlat[i] = String.valueOf(Double.valueOf(hms[0]) + Double.valueOf(hms[1]) / 60.0 + Double.valueOf(hms[1]) / 3600.0);
+		}
+		return lonlat[0] + '$' + lonlat[1]; 
+	}
+	
+	private static String line2line2(String line, int index) {
+		String[] pole = line.split("\\$");
+		if (pole.length != 13)
+			throw new RuntimeException("2 Délka pole není 13 (řádek " + index + ")");
+
+		StringBuffer sb = new StringBuffer();
+		switch (pole[1]) {
+		case "MP":
+			sb.append("9$Vladimír Bílek$");
+			break;
+		default:
+			throw new RuntimeException("2 Neznámý šéf " + pole[1] + " (řádek " + index + ")");
+		}
+		
+		switch (pole[2]) {
+		case "Bosch Zdařil Jakub":
+			sb.append("6$Jakub Zdařil$");
+			break;
+		case "Bosch Stehlík Tomáš":
+			sb.append("7$Stehlík Tomáš$");
+			break;
+		case "Bosch Poliak Michal":
+			sb.append("8$Michal Poliak$");
+			break;
+		case "Bosch Sladký Jan":
+			sb.append("3$Jan Sladký$");
+			break;			
+		default:
+			throw new RuntimeException("2 Neznámý klikač " + pole[2] + " (řádek " + index + ")");
+		}
+		
+		sb.append(pole[5]);
+		sb.append("$" + index);
+		sb.append("$");
+		sb.append(pole[6]);
+		sb.append("$");
+		sb.append(pole[7]);
+		sb.append("$");
+		try {
+			sb.append(lonlat2lonlat(pole[12]));
+		} catch (Exception e) {
+			throw new RuntimeException("2 chyba konverze " + pole[12] + " (řádek " + index + ")");
+		}
+		
+		return sb.toString();
+	}
+
 
 	/**
 	 * @param args
@@ -76,13 +135,37 @@ public class Konvertor {
 					continue;
 				
 				
-				line = line2line(line, index);
+				line = line2line1(line, index);
 				out.write(line);
 				out.write("\n");
 				
 			}
 
 			in.close();
+			
+			int last = index;
+			
+			fileDirIn = new File("/home/honza/github/bosh/doc/dat.csv");
+			in = new BufferedReader(new InputStreamReader(
+					new FileInputStream(fileDirIn), "UTF8"));
+			
+			index = -1;
+			while ((line = in.readLine()) != null) {
+				index++;
+				if (index == 0)
+					continue;
+				
+				
+				line = line2line2(line, index + last);
+				out.write(line);
+				out.write("\n");
+				
+			}
+
+			in.close();
+		
+			
+			
 			out.close();
 		} catch (UnsupportedEncodingException e) {
 			System.out.println(e.getMessage());
