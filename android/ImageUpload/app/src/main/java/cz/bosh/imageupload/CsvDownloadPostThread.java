@@ -70,8 +70,14 @@ public class CsvDownloadPostThread extends Thread {
                 new InputStreamReader(con.getInputStream()));
         String inputLine;
         StringBuffer response = new StringBuffer();
+        boolean first = true;
 
         while ((inputLine = in.readLine()) != null) {
+            if (first) {
+                first = false;
+            } else {
+                response.append("\n");
+            }
             response.append(inputLine);
         }
         in.close();
