@@ -9,8 +9,8 @@
     <string name="unknown">unknown</string>
     <string name="sending_gps">Sending GPS coordinates..."</string>
     <string name="server_response">Server response: </string>
-    <string name="note">Note: </string>
-    <string name="comment">Comment: </string>
+    <string name="note">poznámka Bosch: </string>
+    <string name="comment">poznámka konkurence: </string>
     <string name="login">Login</string>
     <string name="relogin">Update/Login</string>
     <string name="password">Password</string>

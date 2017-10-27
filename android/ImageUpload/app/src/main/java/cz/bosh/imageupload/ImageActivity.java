@@ -122,7 +122,6 @@ public class ImageActivity extends Activity {
             }
 
             mShopData.add(si);
-            mShopData.add(si);
             list.add(line);
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
