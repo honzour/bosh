@@ -32,13 +32,34 @@ include("utils.php");
 	{
 		// TODO access rights!
 
+		if (isset($_GET["limit"])) {
+			$limit = (int)$_GET["limit"];
+		} else {
+			$limit = 5;
+		}
+		if (isset($_GET["offset"])) {
+			$offset = (int)$_GET["offset"];
+		} else {
+			$offset = 0;
+		}
+		if ($limit < 0)
+			$limit = 0;
+		if ($offset < 0)
+			$offset = 0;
+
+		?>
+		<BR><FORM method="get" action = "index.php">Vypisuji až <INPUT type="text" name = "limit" value="<?php echo($limit); ?>"> záznamů od pozice <INPUT type="text" name = "offset" value="<?php echo($offset); ?>">.<INPUT type="submit" value="Odeslat"></FORM>
+
+<?php
+
 		if (array_key_exists("action", $_GET) && $_GET["action"] == "delete") {
 			$id = mysql_escape_string($_GET["id"]);
 
 			mysql_query("DELETE FROM photos WHERE id = '" . $id . "'", $db);
 		}
 
-		$result = mysql_query("SELECT p.id, p.photo, p.note, p.note2, p.istourplan, p.isorder, concat_ws(', ', b.name, s.street, s.city), p.savedtime FROM photos p left join shops s on s.id = p.shop left join brands b on b.id = s.brand order by p.savedtime desc", $db);
+		$q = "SELECT p.id, p.photo, p.note, p.note2, p.istourplan, p.isorder, concat_ws(', ', b.name, s.street, s.city), p.savedtime FROM photos p left join shops s on s.id = p.shop left join brands b on b.id = s.brand  order by p.savedtime desc limit " . $limit . " offset " . $offset;
+		$result = mysql_query($q, $db);
 		if (!$result) {
 			echo(mysql_error());
 		}
