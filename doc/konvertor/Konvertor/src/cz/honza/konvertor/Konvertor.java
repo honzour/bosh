@@ -32,7 +32,7 @@ public class Konvertor {
 			sb.append("2$Jan Holouš$");
 			break;
 		case "KAM TT CZ1 LU":
-			sb.append("3$Martin Lukeš$");
+			sb.append("5$Martin Lukeš$");
 			break;
 		case "KAM TT CZ2 SL":
 			sb.append("3$Jan Sladký$");
