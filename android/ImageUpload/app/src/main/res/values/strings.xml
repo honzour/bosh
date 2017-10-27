@@ -20,4 +20,6 @@
     <string name="photodot">Photo:</string>
     <string name="shop">Shop:</string>
     <string name="use_gps">Use GPS</string>
+    <string name="tourplan">Tourplán</string>
+    <string name="order">Objednávka</string>
 </resources>

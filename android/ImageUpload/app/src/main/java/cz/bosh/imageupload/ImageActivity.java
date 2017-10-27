@@ -55,6 +55,8 @@ public class ImageActivity extends Activity {
     private Spinner mShop;
     private ImageView mImage;
     private CheckBox mUseGps;
+    private CheckBox mTourplan;
+    private CheckBox mOrder;
 
     private List<SelectItem> mShopData;
 
@@ -93,6 +95,8 @@ public class ImageActivity extends Activity {
         mShop = (Spinner) findViewById(R.id.image_shop);
         mImage = (ImageView) findViewById(R.id.image_image);
         mUseGps = (CheckBox) findViewById(R.id.image_use_gps);
+        mTourplan = (CheckBox) findViewById(R.id.image_tourplan);
+        mOrder = (CheckBox) findViewById(R.id.image_order);
         updateImage();
 
         mImage.setOnClickListener(new View.OnClickListener() {
@@ -249,6 +253,10 @@ public class ImageActivity extends Activity {
         map.put("shop", String.valueOf(si == null ? -1 : si.index));
         map.put("note", mNote.getText().toString());
         map.put("note2", mNote2.getText().toString());
+        if (mTourplan.isChecked())
+            map.put("istourplan", "1");
+        if (mOrder.isChecked())
+            map.put("isorder", "1");
 
         ImageApplication.isPostRunning = true;
         setThreadControls();

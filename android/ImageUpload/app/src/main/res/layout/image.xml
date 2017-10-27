@@ -105,6 +105,24 @@
                     />
             </TableRow>
             <TableRow>
+                <CheckBox
+                    android:layout_span="2"
+                    android:id="@+id/image_tourplan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tourplan"
+                    android:checked="false" />
+            </TableRow>
+            <TableRow>
+                <CheckBox
+                    android:layout_span="2"
+                    android:id="@+id/image_order"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/order"
+                    android:checked="false" />
+            </TableRow>
+            <TableRow>
                 <TextView
                     android:layout_gravity="center_vertical"
                     android:layout_margin="10dp"
