@@ -39,26 +39,33 @@ include("utils.php");
 				$data = mysql_escape_string($data);
 				fclose($fp);
 
-				$r = mysql_query("INSERT INTO photos (photo, shop, note, note2, istourplan, isorder, savedtime) VALUES (" . 
+				$r = mysql_query("INSERT INTO photos (photo, shop, note, note2, istourplan, isorder, savedtime, worker, web) VALUES (" . 
 					"'" . $data .  "'," .
 					"'" . mysql_escape_string($_POST["shop"]) .  "', " .
 					"'" . mysql_escape_string($_POST["note"]) .  "', " .
 					"'" . mysql_escape_string($_POST["note2"]) .  "', " .
 					"'" . (isset($_POST["istourplan"]) ? 1 : 0) .  "', " .
 					"'" . (isset($_POST["isorder"]) ? 1 : 0) .  "'" .
-					", NOW())");
+					", NOW()" .
+					", $person_id, " .
+					(isset($_POST["web"]) ? 1 : 0) .
+					")");
 				if (!$r) {
 					errorHeader(500, "Cannot insert uploaded file into db " . mysql_error($db));
 				}
 			} else {
-				$r = mysql_query("INSERT INTO photos (photo, shop, note, note2, istourplan, isorder, savedtime) VALUES (" . 
+				$r = mysql_query("INSERT INTO photos (photo, shop, note, note2, istourplan, isorder, savedtime, worker, web) VALUES (" . 
 					"'', " . // photo
 					"'" . mysql_escape_string($_POST["shop"]) .  "', " .
 					"'" . mysql_escape_string($_POST["note"]) .  "', " .
 					"'" . mysql_escape_string($_POST["note2"]) .  "', " .
 					"'" . (isset($_POST["istourplan"]) ? 1 : 0) .  "', " .
 					"'" . (isset($_POST["isorder"]) ? 1 : 0) .  "'" .
-				", NOW())");
+					", NOW()" .
+					", $person_id, " .
+					(isset($_POST["web"]) ? 1 : 0) .
+					")");
+
 				if (!$r) {
 					fclose($fp);
 					errorHeader(500, "Cannot insert into db " . mysql_error($db));
@@ -119,6 +126,7 @@ Fotka přidána.<BR>
 <TR><TD>Fotka:</TD><TD><INPUT type = "file" name="file"></TD></TR>
 </TABLE>
 <P>
+<INPUT type = "hidden" name = "web" value = "1">
 <INPUT type = "submit">
 </FORM>
 <?php 
