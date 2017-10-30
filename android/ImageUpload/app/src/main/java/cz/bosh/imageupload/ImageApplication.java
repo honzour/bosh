@@ -1,8 +1,10 @@
 package cz.bosh.imageupload;
 
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,8 @@ public class ImageApplication extends Application {
 
     private static List<String> csv = null;
 
+    public static Database database;
+
     @Override
     public void onCreate() {
         imageApplication = this;
@@ -35,6 +39,7 @@ public class ImageApplication extends Application {
         if (csvText != null) {
             parseCsv(csvText);
         }
+        database = new Database(this);
     }
 
     public static synchronized void parseCsv(String text) {

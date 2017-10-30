@@ -114,6 +114,8 @@ public class ImageUploadPostThread extends Thread {
 
             byte[] b = out.toByteArray();
 
+            long id = ImageApplication.database.insert(b, mPostArgs);
+
 
             String boundary = Long.toHexString(System.currentTimeMillis()); // Just generate some unique random value.
             String CRLF = "\r\n"; // Line separator required by multipart/form-data.
