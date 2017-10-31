@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -21,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -133,9 +135,6 @@ public class ImageActivity extends Activity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mShop.setAdapter(adapter);
 
-
-
-
         setThreadControls();
 
         mUploadButton.setOnClickListener(new View.OnClickListener() {
@@ -143,6 +142,15 @@ public class ImageActivity extends Activity {
             public void onClick(View v) {
                 Toast.makeText(ImageApplication.imageApplication, R.string.sending_gps , Toast.LENGTH_LONG).show();
                 prepareAndStartPost();
+            }
+        });
+
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Database.Record record = createDatabaseRecord();
+                ImageApplication.database.insert(record);
+                finish();
             }
         });
 
@@ -240,7 +248,7 @@ public class ImageActivity extends Activity {
         }
     }
 
-    protected void prepareAndStartPost() {
+    protected Database.Record createDatabaseRecord() {
         Map<String, String> map = new HashMap<String, String>(5);
 
         map.put("login", ImageApplication.login);
@@ -258,13 +266,90 @@ public class ImageActivity extends Activity {
         if (mOrder.isChecked())
             map.put("isorder", "1");
 
-        ImageApplication.isPostRunning = true;
-        setThreadControls();
-        new ImageUploadPostThread(Settings.URL_BASE + Settings.URL_END_ADD, map, ImageApplication.currentPhotoPath).start();
+        File f = new File(ImageApplication.currentPhotoPath);
+        String name = f.getName();
+        Database.Record record = new Database.Record(name, getImage(), map);
+        return record;
     }
 
+    protected void prepareAndStartPost() {
+        ImageApplication.isPostRunning = true;
+        setThreadControls();
+        new ImageUploadPostThread(Settings.URL_BASE + Settings.URL_END_ADD, createDatabaseRecord()).start();
+    }
+
+    protected static byte[] getImage() {
+        Bitmap smaller_bm = decodeBitmap();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        smaller_bm.compress(Bitmap.CompressFormat.JPEG, 80, out);
+        smaller_bm.recycle();
+
+        return out.toByteArray();
+    }
+
+    public static Bitmap decodeBitmap() {
+        if (ImageApplication.currentPhotoPath == null)
+            return null;
+        Bitmap smaller_bm = null;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+
+            final int maxWidth = 640;
+            final int maxHeight = 480;
+
+            int iter = 0;
+            do {
+                BitmapFactory.decodeFile(ImageApplication.currentPhotoPath, options);
+                if (options.outWidth < 0)
+                    if (iter > 5)
+                        throw new RuntimeException("Cannot read photo");
+                Thread.sleep(100);
+                iter++;
+            }
+            while (options.outWidth < 0);
+
+            options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
+            options.inJustDecodeBounds = false;
+
+            smaller_bm = BitmapFactory.decodeFile(ImageApplication.currentPhotoPath, options);
+        } catch (Exception e) {
+            // ignore, use null value
+        }
+        if (smaller_bm == null) {
+            ImageApplication.currentPhotoPath = null;
+        }
+        return smaller_bm;
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+
+
     private void updateImage() {
-        Bitmap bmp = ImageUploadPostThread.decodeBitmap();
+        Bitmap bmp = decodeBitmap();
         if (bmp != null) {
             mImage.setImageBitmap(bmp);
 

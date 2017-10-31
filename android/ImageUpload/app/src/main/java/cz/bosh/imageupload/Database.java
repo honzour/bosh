@@ -18,10 +18,12 @@ import java.util.Map;
 public class Database extends SQLiteOpenHelper {
 
     public static class Record {
+        public String filename;
         public byte[] image;
         public Map<String, String> map;
 
-        public Record(byte[] image, Map<String, String> map) {
+        public Record(String filename, byte[] image, Map<String, String> map) {
+            this.filename = filename;
             this.image = image;
             this.map = map;
         }
@@ -31,13 +33,14 @@ public class Database extends SQLiteOpenHelper {
     private static final String TABLE_NAME_ARGS = "ARGS";
 
     private static final String COLUMN_NAME_ID = "ID";
+    private static final String COLUMN_NAME_FILENAME = "FILENAME";
     private static final String COLUMN_NAME_IMAGE = "IMAGE";
     private static final String COLUMN_NAME_ID_POST = "ID_POST";
     private static final String COLUMN_NAME_NAME = "NAME";
     private static final String COLUMN_NAME_VALUE = "VALUE";
 
     private static final String SQL_CREATE_POSTS = "CREATE TABLE " + TABLE_NAME_POSTS + " (" +
-            COLUMN_NAME_ID + " INTEGER PRIMARY KEY, " + COLUMN_NAME_IMAGE + " BLOB)";
+            COLUMN_NAME_ID + " INTEGER PRIMARY KEY, " + COLUMN_NAME_FILENAME + " VARCHAR, "  + COLUMN_NAME_IMAGE + " BLOB)";
     private static final String SQL_DROP_POSTS = "DROP TABLE IF EXISTS " + TABLE_NAME_POSTS;
 
     private static final String SQL_CREATE_ARGS = "CREATE TABLE " + TABLE_NAME_ARGS + " (" +
@@ -66,18 +69,21 @@ public class Database extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public long insert(byte[] image, Map<String, String> args) {
+    public long insert(Record record) {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_NAME_IMAGE, image);
+        values.put(COLUMN_NAME_IMAGE, record.image);
+        values.put(COLUMN_NAME_FILENAME, record.filename);
         long newRowId = db.insert(TABLE_NAME_POSTS, null, values);
 
-        values = new ContentValues();
-        values.put(COLUMN_NAME_ID_POST, newRowId);
-        for (Map.Entry<String, String> e : args.entrySet()) {
+
+        for (Map.Entry<String, String> e : record.map.entrySet()) {
+            values = new ContentValues();
+            values.put(COLUMN_NAME_ID_POST, newRowId);
             values.put(COLUMN_NAME_NAME, e.getKey());
             values.put(COLUMN_NAME_VALUE, e.getValue());
+            db.insert(TABLE_NAME_ARGS, null, values);
         }
 
         return newRowId;
@@ -115,6 +121,7 @@ public class Database extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] projection = {
+                COLUMN_NAME_FILENAME,
                 COLUMN_NAME_IMAGE
         };
 
@@ -137,6 +144,7 @@ public class Database extends SQLiteOpenHelper {
             return null;
         }
         byte[] b = cursor.getBlob(cursor.getColumnIndexOrThrow(COLUMN_NAME_IMAGE));
+        String filename = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME_FILENAME));
         cursor.close();
 
         String[] projection2 = {
@@ -164,6 +172,6 @@ public class Database extends SQLiteOpenHelper {
             map.put(name, value);
         }
 
-        return new Record(b, map);
+        return new Record(filename, b, map);
     }
 }

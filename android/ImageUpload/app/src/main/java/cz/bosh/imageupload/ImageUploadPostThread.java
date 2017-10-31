@@ -29,93 +29,25 @@ import java.util.Map;
 public class ImageUploadPostThread extends Thread {
 
     protected String mUrl;
-    protected Map<String, String> mPostArgs;
-    protected String mPathToImage;
+//    protected Map<String, String> mPostArgs;
+//    protected String mPathToImage;
+    Database.Record mRecord;
     protected Handler mHandler;
 
-    public ImageUploadPostThread(String url, Map<String, String> postArgs, String pathToImage) {
+    public ImageUploadPostThread(String url, /*Map<String, String> postArgs, String pathToImage*/ Database.Record record) {
         super();
         mUrl = url;
-        mPostArgs = postArgs;
-        mPathToImage = pathToImage;
+        mRecord = record;
+        //mPostArgs = postArgs;
+        //mPathToImage = pathToImage;
         mHandler = new Handler();
     }
 
-    public static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
 
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
-    public static Bitmap decodeBitmap() {
-        if (ImageApplication.currentPhotoPath == null)
-            return null;
-        Bitmap smaller_bm = null;
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-
-            final int maxWidth = 640;
-            final int maxHeight = 480;
-
-            int iter = 0;
-            do {
-                BitmapFactory.decodeFile(ImageApplication.currentPhotoPath, options);
-                if (options.outWidth < 0)
-                    if (iter > 5)
-                        throw new RuntimeException("Cannot read photo");
-                    Thread.sleep(100);
-                    iter++;
-            }
-            while (options.outWidth < 0);
-
-            options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
-            options.inJustDecodeBounds = false;
-
-            smaller_bm = BitmapFactory.decodeFile(ImageApplication.currentPhotoPath, options);
-        } catch (Exception e) {
-            // ignore, use null value
-        }
-        if (smaller_bm == null) {
-            ImageApplication.currentPhotoPath = null;
-        }
-        return smaller_bm;
-    }
 
     protected String doPostWithImage() {
 
         try {
-            Bitmap smaller_bm = decodeBitmap();
-
-            File f = new File(mPathToImage);
-            String name = f.getName();
-
-
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            smaller_bm.compress(Bitmap.CompressFormat.JPEG, 80, out);
-            smaller_bm.recycle();
-
-            byte[] b = out.toByteArray();
-
-            long id = ImageApplication.database.insert(b, mPostArgs);
-
 
             String boundary = Long.toHexString(System.currentTimeMillis()); // Just generate some unique random value.
             String CRLF = "\r\n"; // Line separator required by multipart/form-data.
@@ -131,7 +63,7 @@ public class ImageUploadPostThread extends Thread {
 
 
             // Send normal params
-            for (Map.Entry<String, String> entry : mPostArgs.entrySet()) {
+            for (Map.Entry<String, String> entry : mRecord.map.entrySet()) {
                 writer.append("--" + boundary).append(CRLF);
                 writer.append("Content-Disposition: form-data; name=\"" + entry.getKey() + "\"").append(CRLF);
                 writer.append("Content-Type: text/plain; charset=" + charset).append(CRLF);
@@ -140,13 +72,13 @@ public class ImageUploadPostThread extends Thread {
 
             // Send binary file.
             writer.append("--" + boundary).append(CRLF);
-            writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"" + name + "\"").append(CRLF);
-            writer.append("Content-Type: " + URLConnection.guessContentTypeFromName(name)).append(CRLF);
+            writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"" + mRecord.filename + "\"").append(CRLF);
+            writer.append("Content-Type: " + URLConnection.guessContentTypeFromName(mRecord.filename)).append(CRLF);
             writer.append("Content-Transfer-Encoding: binary").append(CRLF);
             writer.append(CRLF).flush();
 
 
-            InputStream input = new ByteArrayInputStream(b);
+            InputStream input = new ByteArrayInputStream(mRecord.image);
 
             byte[] buffer = new byte[1024];
             int bytesRead;
@@ -167,7 +99,6 @@ public class ImageUploadPostThread extends Thread {
             String responseMessage = ((HttpURLConnection) connection).getResponseMessage();
 
             if (responseCode == 200) {
-                f.delete();
                 ImageApplication.currentPhotoPath = null;
                 return null;
             }
