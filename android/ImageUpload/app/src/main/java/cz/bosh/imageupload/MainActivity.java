@@ -114,10 +114,7 @@ public class MainActivity extends Activity {
         mSaved.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Long> ids = ImageApplication.database.selectAll();
-                for (Long l : ids) {
-                    Log.i("IDJE", l.toString());
-                }
+                startActivity(new Intent(MainActivity.this, RecordsActivity.class));
             }
         });
     }

@@ -30,6 +30,10 @@
             android:windowSoftInputMode="stateHidden"
             >
         </activity>
+        <activity android:name=".RecordsActivity"
+            android:windowSoftInputMode="stateHidden"
+            >
+        </activity>
     </application>
 
 </manifest>

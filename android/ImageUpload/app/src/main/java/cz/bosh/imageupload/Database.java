@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,16 @@ import java.util.Map;
  */
 
 public class Database extends SQLiteOpenHelper {
+
+    public static class Record {
+        public byte[] image;
+        public Map<String, String> map;
+
+        public Record(byte[] image, Map<String, String> map) {
+            this.image = image;
+            this.map = map;
+        }
+    }
 
     private static final String TABLE_NAME_POSTS = "POSTS";
     private static final String TABLE_NAME_ARGS = "ARGS";
@@ -75,7 +86,6 @@ public class Database extends SQLiteOpenHelper {
     public List<Long> selectAll() {
         SQLiteDatabase db = getReadableDatabase();
 
-
         String[] projection = {
                 COLUMN_NAME_ID
         };
@@ -99,5 +109,61 @@ public class Database extends SQLiteOpenHelper {
         }
         cursor.close();
         return itemIds;
+    }
+
+    public Record selectById(long id) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] projection = {
+                COLUMN_NAME_IMAGE
+        };
+
+        String[] selectionArgs = {
+                String.valueOf(id)
+        };
+
+        Cursor cursor = db.query(
+                TABLE_NAME_POSTS,                     // The table to query
+                projection,                               // The columns to return
+                COLUMN_NAME_ID + " = ?",                                // The columns for the WHERE clause
+                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                 // The sort order
+        );
+        List<Long> itemIds = new ArrayList<Long>();
+        if (!cursor.moveToFirst()) {
+            cursor.close();
+            return null;
+        }
+        byte[] b = cursor.getBlob(cursor.getColumnIndexOrThrow(COLUMN_NAME_IMAGE));
+        cursor.close();
+
+        String[] projection2 = {
+                COLUMN_NAME_NAME,
+                COLUMN_NAME_VALUE
+        };
+
+        cursor = db.query(
+                TABLE_NAME_ARGS,                     // The table to query
+                projection2,                               // The columns to return
+                COLUMN_NAME_ID_POST + " = ?",                                // The columns for the WHERE clause
+                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                 // The sort order
+        );
+
+        Map<String, String> map = new HashMap<String, String>();
+
+        while(cursor.moveToNext()) {
+            String name = cursor.getString(
+                    cursor.getColumnIndexOrThrow(COLUMN_NAME_NAME));
+            String value = cursor.getString(
+                    cursor.getColumnIndexOrThrow(COLUMN_NAME_VALUE));
+            map.put(name, value);
+        }
+
+        return new Record(b, map);
     }
 }
