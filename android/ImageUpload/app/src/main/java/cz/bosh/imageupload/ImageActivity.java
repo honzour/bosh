@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -168,6 +169,15 @@ public class ImageActivity extends Activity {
             fillDatabaseRecord();
             mUseGps.setChecked(false);
             mUseGps.setEnabled(false);
+            //mNote.setEnabled(false);
+            //mNote2.setEnabled(false);
+
+            mNote.setInputType(InputType.TYPE_NULL);
+            mNote2.setInputType(InputType.TYPE_NULL);
+
+            mShop.setEnabled(false);
+            mTourplan.setEnabled(false);
+            mOrder.setEnabled(false);
         }
 
         mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -304,12 +314,14 @@ public class ImageActivity extends Activity {
         } catch (Exception e) {
             mShop.setSelection(0);
         }
+        Bitmap bmp = BitmapFactory.decodeByteArray(mRecord.image, 0, mRecord.image.length);
+        mImage.setImageBitmap(bmp);
     }
 
     protected void prepareAndStartPost() {
         ImageApplication.isPostRunning = true;
         setThreadControls();
-        new ImageUploadPostThread(Settings.URL_BASE + Settings.URL_END_ADD, createDatabaseRecord()).start();
+        new ImageUploadPostThread(Settings.URL_BASE + Settings.URL_END_ADD, mRecord == null ? createDatabaseRecord() : mRecord).start();
     }
 
     protected static byte[] getImage() {
