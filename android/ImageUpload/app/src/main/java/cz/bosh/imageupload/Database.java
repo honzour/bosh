@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 public class Database extends SQLiteOpenHelper {
 
-    public static class Record {
+    public static class Record implements Serializable {
         public String filename;
         public byte[] image;
         public Map<String, String> map;

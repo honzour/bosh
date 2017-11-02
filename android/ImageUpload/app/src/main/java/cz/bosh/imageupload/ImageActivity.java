@@ -34,6 +34,8 @@ import java.util.Map;
 
 public class ImageActivity extends Activity {
 
+    public static String INTENT_EXTRA_RECORD;
+
     class SelectItem {
         public int index;
         public double lon;
@@ -61,6 +63,7 @@ public class ImageActivity extends Activity {
     private CheckBox mOrder;
 
     private List<SelectItem> mShopData;
+    private Database.Record mRecord;
 
     private static double lon = 0;
     private static double lat = 0;
@@ -85,6 +88,9 @@ public class ImageActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         ImageApplication.imageActivity = this;
         super.onCreate(savedInstanceState);
+        if (getIntent().getExtras() != null) {
+            mRecord = (Database.Record) getIntent().getExtras().getSerializable(INTENT_EXTRA_RECORD);
+        }
         setContentView(R.layout.image);
 
         mUploadButton = findViewById(R.id.image_upload_button);
@@ -99,14 +105,18 @@ public class ImageActivity extends Activity {
         mUseGps = (CheckBox) findViewById(R.id.image_use_gps);
         mTourplan = (CheckBox) findViewById(R.id.image_tourplan);
         mOrder = (CheckBox) findViewById(R.id.image_order);
-        updateImage();
 
-        mImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startCamera();
-            }
-        });
+
+        if (mRecord == null) {
+            updateImage();
+
+            mImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startCamera();
+                }
+            });
+        }
 
         List<String> csv = ImageApplication.getCsv();
 
@@ -153,6 +163,12 @@ public class ImageActivity extends Activity {
                 finish();
             }
         });
+
+        if (mRecord != null) {
+            fillDatabaseRecord();
+            mUseGps.setChecked(false);
+            mUseGps.setEnabled(false);
+        }
 
         mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         mlocListener = new LocationListener()
@@ -237,14 +253,13 @@ public class ImageActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-        {
-            Toast.makeText(ImageActivity.this, R.string.no_gps, Toast.LENGTH_LONG).show();
-        }
-        else
-        {
-            // TODO min time
-            mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
+        if (mRecord == null) {
+            if (!mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                Toast.makeText(ImageActivity.this, R.string.no_gps, Toast.LENGTH_LONG).show();
+            } else {
+                // TODO min time
+                mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
+            }
         }
     }
 
@@ -270,6 +285,25 @@ public class ImageActivity extends Activity {
         String name = f.getName();
         Database.Record record = new Database.Record(name, getImage(), map);
         return record;
+    }
+
+    protected void fillDatabaseRecord() {
+        mNote.setText(mRecord.map.get("note"));;
+        mNote2.setText(mRecord.map.get("note2"));;
+        mTourplan.setChecked(mRecord.map.containsKey("istourplan"));
+        mOrder.setChecked(mRecord.map.containsKey("isorder"));
+        try {
+            int shop = Integer.valueOf(mRecord.map.get("shop"));
+            for (int i = 0; i < mShopData.size(); i++) {
+                if (mShopData.get(i) == null) continue;
+                if (mShopData.get(i).index == shop) {
+                    mShop.setSelection(i);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            mShop.setSelection(0);
+        }
     }
 
     protected void prepareAndStartPost() {
@@ -431,11 +465,11 @@ public class ImageActivity extends Activity {
     }
     public void updateButtons() {
         if (ImageApplication.currentPhotoPath == null || ImageApplication.isPostRunning || mShop.getSelectedItemPosition() < 1) {
-            mUploadButton.setEnabled(false);
+            mUploadButton.setEnabled(mRecord != null);
             mSaveButton.setEnabled(false);
         } else {
             mUploadButton.setEnabled(true);
-            mSaveButton.setEnabled(true);
+            mSaveButton.setEnabled(mRecord == null);
         }
 
     }
