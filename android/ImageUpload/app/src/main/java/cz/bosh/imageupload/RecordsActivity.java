@@ -7,9 +7,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by honza on 31.10.17.
@@ -17,26 +19,52 @@ import java.util.List;
 
 public class RecordsActivity extends Activity {
 
-    ListView mList;
+    private ListView mList;
+    private List<Database.ShortRecord> ids;
+    private List<String> captions;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final List<Long> ids = ImageApplication.database.selectAll();
 
         setContentView(R.layout.records);
         mList = (ListView) findViewById(R.id.records_list);
-
-        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.records_item, R.id.records_item_text, ids);
-        mList.setAdapter(adapter);
         mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Database.Record dr = ImageApplication.database.selectById(ids.get(i));
+                Database.ShortRecord sr = ids.get(i);
+                Database.Record dr = ImageApplication.database.selectById(sr.id);
                 Intent intent = new Intent(RecordsActivity.this, ImageActivity.class);
                 intent.putExtra(ImageActivity.INTENT_EXTRA_RECORD, dr);
+                intent.putExtra(ImageActivity.INTENT_EXTRA_ID, sr);
                 startActivity(intent);
-
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ids = ImageApplication.database.selectAll();
+        captions = new ArrayList<String>(ids.size());
+
+        List<String> csv = ImageApplication.getCsv();
+        Map<Integer, String> m = new HashMap<Integer, String>(csv.size());
+        for (String line : csv) {
+            try {
+                String[] fields = line.split("\\$");
+                line = fields[0] + ',' + fields[1] + ',' + fields[2];
+                m.put(Integer.valueOf(fields[3]), line);
+            } catch (Exception e) {
+                continue;
+                // TODO
+            }
+
+        }
+
+        for (Database.ShortRecord r : ids) {
+            captions.add(r.id + " " + m.get((int)r.shop));
+        }
+        ArrayAdapter adapter = new ArrayAdapter(this, R.layout.records_item, R.id.records_item_text, captions);
+        mList.setAdapter(adapter);
     }
 }

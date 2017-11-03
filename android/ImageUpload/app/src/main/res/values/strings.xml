@@ -22,4 +22,5 @@
     <string name="use_gps">Use GPS</string>
     <string name="tourplan">Tourplán</string>
     <string name="order">Objednávka</string>
+    <string name="delete">Delete</string>
 </resources>

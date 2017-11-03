@@ -18,6 +18,16 @@ import java.util.Map;
 
 public class Database extends SQLiteOpenHelper {
 
+    public static class ShortRecord implements Serializable {
+        public long id;
+        public long shop;
+
+        public ShortRecord(long id, long shop) {
+            this.id = id;
+            this.shop = shop;
+        }
+    }
+
     public static class Record implements Serializable {
         public String filename;
         public byte[] image;
@@ -90,7 +100,14 @@ public class Database extends SQLiteOpenHelper {
         return newRowId;
     }
 
-    public List<Long> selectAll() {
+    public void delete(long id) {
+        SQLiteDatabase db = getWritableDatabase();
+        String[] whereArgs = {String.valueOf(id)};
+        db.delete(TABLE_NAME_ARGS, COLUMN_NAME_ID_POST + " = ?", whereArgs);
+        db.delete(TABLE_NAME_POSTS, COLUMN_NAME_ID + " = ?", whereArgs);
+    }
+
+    public List<ShortRecord> selectAll() {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] projection = {
@@ -99,7 +116,7 @@ public class Database extends SQLiteOpenHelper {
 
         String sortOrder = COLUMN_NAME_ID + " DESC";
 
-        Cursor cursor = db.query(
+        /*Cursor cursor = db.query(
                 TABLE_NAME_POSTS,                     // The table to query
                 projection,                               // The columns to return
                 null,                                // The columns for the WHERE clause
@@ -108,11 +125,21 @@ public class Database extends SQLiteOpenHelper {
                 null,                                     // don't filter by row groups
                 sortOrder                                 // The sort order
         );
-        List<Long> itemIds = new ArrayList<Long>();
+        */
+
+        String sql = "SELECT p." + COLUMN_NAME_ID + ", a." + COLUMN_NAME_VALUE +
+                " FROM " + TABLE_NAME_POSTS + " p LEFT JOIN " + TABLE_NAME_ARGS + " a ON p." +
+                COLUMN_NAME_ID + " = a." + COLUMN_NAME_ID_POST + " WHERE a." + COLUMN_NAME_NAME +
+                " = 'shop' OR a." + COLUMN_NAME_NAME + " IS NULL";
+        Cursor cursor = db.rawQuery(sql, null);
+
+        List<ShortRecord> itemIds = new ArrayList<ShortRecord>();
         while(cursor.moveToNext()) {
             long itemId = cursor.getLong(
                     cursor.getColumnIndexOrThrow(COLUMN_NAME_ID));
-            itemIds.add(itemId);
+            long shop = cursor.getLong(
+                    cursor.getColumnIndexOrThrow(COLUMN_NAME_VALUE));
+           itemIds.add(new ShortRecord(itemId, shop));
         }
         cursor.close();
         return itemIds;

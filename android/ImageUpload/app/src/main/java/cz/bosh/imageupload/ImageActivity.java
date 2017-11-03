@@ -35,7 +35,8 @@ import java.util.Map;
 
 public class ImageActivity extends Activity {
 
-    public static String INTENT_EXTRA_RECORD;
+    public static final String INTENT_EXTRA_RECORD = "INTENT_EXTRA_RECORD";
+    public static final String INTENT_EXTRA_ID = "INTENT_EXTRA_ID";
 
     class SelectItem {
         public int index;
@@ -56,6 +57,7 @@ public class ImageActivity extends Activity {
     private TextView mNote2;
     private View mUploadButton;
     private View mSaveButton;
+    private View mDeleteButton;
     private View mProgressBar;
     private Spinner mShop;
     private ImageView mImage;
@@ -65,6 +67,7 @@ public class ImageActivity extends Activity {
 
     private List<SelectItem> mShopData;
     private Database.Record mRecord;
+    private Database.ShortRecord mShortRecord;
 
     private static double lon = 0;
     private static double lat = 0;
@@ -91,11 +94,13 @@ public class ImageActivity extends Activity {
         super.onCreate(savedInstanceState);
         if (getIntent().getExtras() != null) {
             mRecord = (Database.Record) getIntent().getExtras().getSerializable(INTENT_EXTRA_RECORD);
+            mShortRecord = (Database.ShortRecord)getIntent().getExtras().getSerializable(INTENT_EXTRA_ID);
         }
         setContentView(R.layout.image);
 
         mUploadButton = findViewById(R.id.image_upload_button);
         mSaveButton = findViewById(R.id.image_save_button);
+        mDeleteButton = findViewById(R.id.image_delete_button);
 
         mAccuracy = (TextView) findViewById(R.id.image_accuracy);
         mNote = (TextView) findViewById(R.id.image_note);
@@ -161,6 +166,15 @@ public class ImageActivity extends Activity {
             public void onClick(View v) {
                 Database.Record record = createDatabaseRecord();
                 ImageApplication.database.insert(record);
+                finish();
+            }
+        });
+
+        mDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ImageApplication.database.delete(mShortRecord.id);
                 finish();
             }
         });
@@ -483,6 +497,6 @@ public class ImageActivity extends Activity {
             mUploadButton.setEnabled(true);
             mSaveButton.setEnabled(mRecord == null);
         }
-
+        mDeleteButton.setEnabled(mRecord != null && !ImageApplication.isPostRunning);
     }
 }
