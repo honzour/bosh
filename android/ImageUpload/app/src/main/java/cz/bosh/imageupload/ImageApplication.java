@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +50,18 @@ public class ImageApplication extends Application {
         for (String line : lines) {
             csv.add(line);
         }
+
+        Collections.sort(csv, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String[] fields = o1.split("\\$");
+                String s1 = fields[0] + ',' + fields[2] + ',' + fields[1];
+                fields = o2.split("\\$");
+                String s2 = fields[0] + ',' + fields[2] + ',' + fields[1];
+
+                return s1.compareTo(s2);
+            }
+        });
     }
 
     public static synchronized  List<String> getCsv() {

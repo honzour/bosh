@@ -136,7 +136,7 @@ public class ImageActivity extends Activity {
             SelectItem si = null;
             try {
                 String[] fields = line.split("\\$");
-                line = fields[0] + ',' + fields[1] + ',' + fields[2];
+                line = fields[0] + ',' + fields[2] + ',' + fields[1];
                 si = new SelectItem(Integer.valueOf(fields[3]), Double.valueOf(fields[4]), Double.valueOf(fields[5]));
             } catch (Exception e) {
                 continue;
