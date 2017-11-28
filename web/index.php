@@ -2,6 +2,23 @@
 include("db.php");
 include("utils.php");
 
+function htmlSelectAdmin() {
+?>
+	<select name="filter_worker">
+		<option value="-1" selected>Kdokoliv</option>
+<?php
+		$result = mysql_query("SELECT id, name FROM people WHERE worker = 1 ORDER BY name", $db);
+			if (!$result) {
+				echo(mysql_error());
+			}
+			while ($row = mysql_fetch_row($result)) {
+
+			}
+?>
+	</select>
+<?php
+}
+
 	loginUser();
 
 	htmlHeader("Seznam obrázků");
@@ -56,11 +73,14 @@ include("utils.php");
 		Nahrál: 
 <?php
 		if ($admin) {
-			echo("Kdokoliv");
+			htmlSelectAdmin();
+			$where = "1 = 1";
 		} else if ($boss) {
 			echo("$name nebo jeho lidé");
+			$where = "s.boss = $person_id";
 		} else {
 			echo($name);
+			$where = "p.worker = $person_id";
 		}
 ?>
 		<BR><BR>
@@ -74,8 +94,12 @@ include("utils.php");
 				mysql_query("DELETE FROM photos WHERE id = '" . $id . "'", $db);
 			}
 
+			
 
-			$q = "SELECT p.id, p.photo, p.note, p.note2, p.istourplan, p.isorder, concat_ws(', ', b.name, s.street, s.city), p.savedtime, p.web, e.name FROM photos p left join shops s on s.id = p.shop left join brands b on b.id = s.brand left join people e on e.id = p.worker order by p.savedtime desc limit " . $limit . " offset " . $offset;
+
+			$q = "SELECT p.id, p.photo, p.note, p.note2, p.istourplan, p.isorder, concat_ws(', ', b.name, s.street, s.city), p.savedtime, p.web, e.name FROM photos p left join shops s on s.id = p.shop left join brands b on b.id = s.brand left join people e on e.id = p.worker where "
+			. $where .
+			" order by p.savedtime desc limit " . $limit . " offset " . $offset;
 			$result = mysql_query($q, $db);
 			if (!$result) {
 				echo(mysql_error());
