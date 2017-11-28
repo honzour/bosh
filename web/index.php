@@ -2,21 +2,27 @@
 include("db.php");
 include("utils.php");
 
-function htmlSelectAdmin() {
+function htmlSelectAdminBoss($admin) {
 	global $db;
-	global $_POST;
+	global $_GET;
+	global $person_id;
 ?>
 	<select name="filter_worker">
 		<option value="-1" <?php 
-		if (!isset($_POST["filter_worker"]) || $_POST["filter_worker"] == -1) echo("selected"); ?> >Kdokoliv</option>
+		if (!isset($_GET["filter_worker"]) || $_GET["filter_worker"] == -1) echo("selected"); ?> >Kdokoliv</option>
 <?php
-		$result = mysql_query("SELECT id, name FROM people WHERE worker = 1 ORDER BY name", $db);
+		if ($admin) {
+			$q = "SELECT id, name FROM people WHERE worker = 1 ORDER BY name";
+		} else {
+			$q = "SELECT p.id, p.name FROM people p WHERE p.worker = 1 and exists (select 1 from shops s where s.worker = p.id and s.boss = $person_id) ORDER BY p.name";
+		}
+		$result = mysql_query($q, $db);
 			if (!$result) {
 				echo(mysql_error());
 			}
 			while ($row = mysql_fetch_row($result)) {
 				echo("<option value=\"" .$row[0]. "\"");
-		if (isset($_POST["filter_worker"]) && $_POST["filter_worker"] == $row[0]) echo(" selected ");
+		if (isset($_GET["filter_worker"]) && $_GET["filter_worker"] == $row[0]) echo(" selected ");
 				echo(">" .$row[1]. "</option>\n");
 
 			}
@@ -53,7 +59,6 @@ function htmlSelectAdmin() {
 	}
     else
 	{
-		// TODO access rights!
 
 		if ($worker || $boss || $admin) {
 		
@@ -74,23 +79,23 @@ function htmlSelectAdmin() {
 
 		?>
 		<BR>
-		<FORM method="post" action = "index.php">
+		<FORM method="get" action = "index.php">
 		Vypisuji až <INPUT type="text" name = "limit" value="<?php echo($limit); ?>"> záznamů od pozice <INPUT type="text" name = "offset" value="<?php echo($offset); ?>">.<BR><BR>
 		Nahrál: 
 <?php
 		if ($admin) {
-			htmlSelectAdmin();
+			htmlSelectAdminBoss(true);
 			$where = "1 = 1";
 		} else if ($boss) {
-			echo("$name nebo jeho lidé");
+			htmlSelectAdminBoss(false);
 			$where = "s.boss = $person_id";
 		} else {
 			echo($name);
 			$where = "p.worker = $person_id";
 		}
 
-		if (isset($_POST["filter_worker"])) {
-			$where .= "  and p.worker = " . mysql_escape_string($_POST["filter_worker"]);
+		if (isset($_GET["filter_worker"]) && $_GET["filter_worker"] != -1) {
+			$where .= "  and p.worker = " . mysql_escape_string($_GET["filter_worker"]);
 		}
 ?>
 		<BR><BR>
