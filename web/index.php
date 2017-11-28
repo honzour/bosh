@@ -3,15 +3,21 @@ include("db.php");
 include("utils.php");
 
 function htmlSelectAdmin() {
+	global $db;
+	global $_POST;
 ?>
 	<select name="filter_worker">
-		<option value="-1" selected>Kdokoliv</option>
+		<option value="-1" <?php 
+		if (!isset($_POST["filter_worker"]) || $_POST["filter_worker"] == -1) echo("selected"); ?> >Kdokoliv</option>
 <?php
 		$result = mysql_query("SELECT id, name FROM people WHERE worker = 1 ORDER BY name", $db);
 			if (!$result) {
 				echo(mysql_error());
 			}
 			while ($row = mysql_fetch_row($result)) {
+				echo("<option value=\"" .$row[0]. "\"");
+		if (isset($_POST["filter_worker"]) && $_POST["filter_worker"] == $row[0]) echo(" selected ");
+				echo(">" .$row[1]. "</option>\n");
 
 			}
 ?>
@@ -68,8 +74,8 @@ function htmlSelectAdmin() {
 
 		?>
 		<BR>
-		<FORM method="get" action = "index.php">
-		Vypisuji až <INPUT type="text" name = "limit" value="<?php echo($limit); ?>"> záznamů od pozice <INPUT type="text" name = "offset" value="<?php echo($offset); ?>">.<BR>
+		<FORM method="post" action = "index.php">
+		Vypisuji až <INPUT type="text" name = "limit" value="<?php echo($limit); ?>"> záznamů od pozice <INPUT type="text" name = "offset" value="<?php echo($offset); ?>">.<BR><BR>
 		Nahrál: 
 <?php
 		if ($admin) {
@@ -81,6 +87,10 @@ function htmlSelectAdmin() {
 		} else {
 			echo($name);
 			$where = "p.worker = $person_id";
+		}
+
+		if (isset($_POST["filter_worker"])) {
+			$where .= "  and p.worker = " . mysql_escape_string($_POST["filter_worker"]);
 		}
 ?>
 		<BR><BR>
