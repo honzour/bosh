@@ -49,6 +49,8 @@ public class Konvertor {
 		sb.append(pole[7]);
 		sb.append("$");
 		sb.append(pole[12].replace(",", "$"));
+		sb.append("$");
+		sb.append(pole[4]);
 		
 		return sb.toString();
 	}
@@ -107,6 +109,8 @@ public class Konvertor {
 		} catch (Exception e) {
 			throw new RuntimeException("2 chyba konverze " + pole[12] + " (řádek " + index + ")");
 		}
+		sb.append("$");
+		sb.append(pole[4]);
 		
 		return sb.toString();
 	}
