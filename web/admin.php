@@ -63,9 +63,9 @@ Nahrávám csv soubor...<BR>
 					if (count($rows) <= $row + 1)
 						break;
 					$fields = explode("$", $data);
-					if (count($fields) != 11) {
+					if (count($fields) != 10) {
 						echo("Chyba na řádku " . ($row + 1) . ":<BR>" . htmlspecialchars($data));
-						echo("<BR>Musí jít o 11 csv oddělených údajů, ale je jich tam " . count($fields));
+						echo("<BR>Musí jít o 10 csv oddělených údajů, ale je jich tam " . count($fields));
 						$ok = false;
 						break;
 					} else
@@ -81,8 +81,6 @@ Nahrávám csv soubor...<BR>
 						$street = mysql_escape_string(trim($fields[7]));
 						$lon = mysql_escape_string(trim($fields[8]));
 						$lat = mysql_escape_string(trim($fields[9]));
-						$nid = mysql_escape_string(trim($fields[10]));
-
 
 						$res = mysql_query("select count(1) as cnt from people where id = $person1_id and boss = 1");
 						$cnt = mysql_fetch_row($res)[0];
@@ -150,7 +148,6 @@ Nahrávám csv soubor...<BR>
 						$street = mysql_escape_string(trim($fields[7]));
 						$lon = mysql_escape_string(trim($fields[8]));
 						$lat = mysql_escape_string(trim($fields[9]));
-						$nid = mysql_escape_string(trim($fields[10]));
 						$query = "select id from brands where name = '$brand'";
 						$res = mysql_query($query);
 						if (!$res) {
@@ -161,7 +158,7 @@ Nahrávám csv soubor...<BR>
 						}
 						$brand_id = mysql_fetch_row($res)[0];
 
-						$query = "insert into shops(id, boss, worker, brand, city, street, lon, lat, nid) values (" .
+						$query = "insert into shops(id, boss, worker, brand, city, street, lon, lat) values (" .
 							"'$shop_id', " .
 							"$person1_id, " .
 							"$person2_id, " .
@@ -169,8 +166,7 @@ Nahrávám csv soubor...<BR>
 							"'$city', " .
 							"'$street', " .
 							"$lon, " .
-							"$lat, " .
- 							"$nid" .
+							"$lat" .
 						")";
 
 						$res = mysql_query($query);

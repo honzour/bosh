@@ -12,7 +12,7 @@ include("utils.php");
 	header('Content-Type: text/plain; charset=utf-8');
 
 	
-	if ($worker) {
+	if ($worker && !$admin && !$boss) {
 		$query = "select concat_ws('$', b.name, s.street, s.city, s.id, s.lon, s.lat) from shops s left join brands b on s.brand = b.id left join people p on p.id = s.worker where p.id='" .
 			$person_id . "' order by s.id";
 	} else {
