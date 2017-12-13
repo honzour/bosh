@@ -77,6 +77,18 @@ function htmlSelectAdminBoss($admin) {
 			if ($offset < 0)
 				$offset = 0;
 
+		
+			if (isset($_GET["shop"])) {
+				$shop = $_GET["shop"];
+			}
+
+			if (isset($_GET["datefrom"])) {
+				$datefrom = $_GET["datefrom"];
+			}
+			if (isset($_GET["dateto"])) {
+				$dateto = $_GET["dateto"];
+			}
+
 		?>
 		<BR>
 		<FORM method="get" action = "index.php">
@@ -97,7 +109,23 @@ function htmlSelectAdminBoss($admin) {
 		if (isset($_GET["filter_worker"]) && $_GET["filter_worker"] != -1) {
 			$where .= "  and p.worker = " . mysql_escape_string($_GET["filter_worker"]);
 		}
+
+		if (isset($shop)) {
+			$where .= " and concat_ws(', ', b.name, s.street, s.city) LIKE '%" . mysql_escape_string($shop) . "%' ";
+ 		}
+
+		if (isset($datefrom) && strlen($datefrom) == 10) {
+			$where .= " and date(savedtime) >= '" . mysql_escape_string($datefrom) . "'";
+		}
+
+		if (isset($dateto) && strlen($dateto) == 10) {
+			$where .= " and date(savedtime) <= '" . mysql_escape_string($dateto) . "'";
+		}
 ?>
+		<BR><BR>
+Obchod obsahuje: <INPUT type = "text" name = "shop" value="<?php if (isset($shop)) {	echo(htmlspecialchars( $shop ) ); } ?>">
+		<BR><BR>
+Nahráno od <INPUT type = "text" name = "datefrom" value="<?php if (isset($datefrom)) {	echo(htmlspecialchars( $datefrom ) ); } ?>" placeholder="2017-01-01"> do <INPUT type = "text" name = "dateto" value="<?php if (isset($dateto)) {	echo(htmlspecialchars( $dateto ) ); } ?>" placeholder="2017-12-31">
 		<BR><BR>
 		<INPUT type="submit" value="Odeslat">
 		</FORM>
