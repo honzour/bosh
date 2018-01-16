@@ -2,6 +2,36 @@
 include("db.php");
 include("utils.php");
 
+function htmlSelectChooseBoss() {
+	global $db;
+	global $_GET;
+	global $person_id;
+?>
+<BR><BR>
+Šéf:
+	<select name="filter_boss">
+		<option value="-1" <?php 
+		if (!isset($_GET["filter_boss"]) || $_GET["filter_boss"] == -1) echo("selected"); ?> >Kdokoliv</option>
+<?php
+		$q = "SELECT id, name FROM people p WHERE p.boss = 1 and exists (select 1 from shops s where s.boss = p.id) ORDER BY name";
+
+		$result = mysql_query($q, $db);
+			if (!$result) {
+				echo(mysql_error());
+			}
+			while ($row = mysql_fetch_row($result)) {
+				echo("<option value=\"" .$row[0]. "\"");
+		if (isset($_GET["filter_worker"]) && $_GET["filter_boss"] == $row[0]) echo(" selected ");
+				echo(">" .$row[1]. "</option>\n");
+
+			}
+?>
+	</select>
+<?php
+
+}
+
+
 function htmlSelectAdminBoss($admin) {
 	global $db;
 	global $_GET;
@@ -97,9 +127,11 @@ function htmlSelectAdminBoss($admin) {
 <?php
 		if ($admin) {
 			htmlSelectAdminBoss(true);
+			htmlSelectChooseBoss();
 			$where = "1 = 1";
 		} else if ($boss) {
 			htmlSelectAdminBoss(false);
+			htmlSelectChooseBoss();
 			$where = "1 = 1" /*"s.boss = $person_id"*/;
 		} else {
 			echo($name);
@@ -108,6 +140,10 @@ function htmlSelectAdminBoss($admin) {
 
 		if (isset($_GET["filter_worker"]) && $_GET["filter_worker"] != -1) {
 			$where .= "  and p.worker = " . mysql_escape_string($_GET["filter_worker"]);
+		}
+
+		if (isset($_GET["filter_boss"]) && $_GET["filter_boss"] != -1) {
+			$where .= "  and s.boss = " . mysql_escape_string($_GET["filter_boss"]);
 		}
 
 		if (isset($shop)) {
