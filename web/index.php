@@ -100,7 +100,7 @@ function htmlSelectAdminBoss($admin) {
 			$where = "1 = 1";
 		} else if ($boss) {
 			htmlSelectAdminBoss(false);
-			$where = "s.boss = $person_id";
+			$where = "1 = 1" /*"s.boss = $person_id"*/;
 		} else {
 			echo($name);
 			$where = "p.worker = $person_id";
@@ -154,8 +154,8 @@ Nahráno od <INPUT type = "text" name = "datefrom" value="<?php if (isset($datef
 <?php
 				echo("<H3> obrázek " . $row[0] . "</H3>\n");
 		        echo("obchod: " . htmlspecialchars($row[6]) . "<BR><BR>\n");
-		        echo("poznámka: " . htmlspecialchars($row[2]) . "<BR><BR>\n");
-		        echo("koment k promotérovi: " . htmlspecialchars($row[3]) . "<BR><BR>\n");
+		        echo("poznámka Bosch: " . htmlspecialchars($row[2]) . "<BR><BR>\n");
+		        echo("poznámka konkurence: " . htmlspecialchars($row[3]) . "<BR><BR>\n");
 		        echo("tourplan: " . ($row[4] ? "ano" : "ne") . "<BR><BR>\n");
 		        echo("objednávka: " . ($row[5] ? "ano" : "ne") . "<BR><BR>\n");
 		        echo("čas: " . htmlspecialchars($row[7]) . "<BR><BR>\n");
