@@ -13,4 +13,7 @@ update shops set id = nid;
 alter table shops drop column nid;
 
 
+alter table shops add column channel varchar(2);
 
+update shops set channel = 'TP' where boss = 9;
+update shops set channel = 'MP' where boss = 1;
