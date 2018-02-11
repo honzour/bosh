@@ -21,8 +21,38 @@ function htmlSelectChooseBoss() {
 			}
 			while ($row = mysql_fetch_row($result)) {
 				echo("<option value=\"" .$row[0]. "\"");
-		if (isset($_GET["filter_worker"]) && $_GET["filter_boss"] == $row[0]) echo(" selected ");
+		if (isset($_GET["filter_boss"]) && $_GET["filter_boss"] == $row[0]) echo(" selected ");
 				echo(">" .$row[1]. "</option>\n");
+
+			}
+?>
+	</select>
+<?php
+
+}
+
+
+function htmlSelectChooseChannel() {
+	global $db;
+	global $_GET;
+	global $person_id;
+?>
+<BR><BR>
+Kanál:
+	<select name="filter_channel">
+		<option value="-1" <?php
+		if (!isset($_GET["filter_channel"]) || $_GET["filter_channel"] == -1) echo("selected"); ?> >Všechny</option>
+<?php
+		$q = "SELECT DISTINCT channel FROM shops ORDER BY channel";
+
+		$result = mysql_query($q, $db);
+			if (!$result) {
+				echo(mysql_error());
+			}
+			while ($row = mysql_fetch_row($result)) {
+				echo("<option value=\"" .$row[0]. "\"");
+		if (isset($_GET["filter_channel"]) && $_GET["filter_channel"] == $row[0]) echo(" selected ");
+				echo(">" .$row[0]. "</option>\n");
 
 			}
 ?>
@@ -128,10 +158,12 @@ function htmlSelectAdminBoss($admin) {
 		if ($admin) {
 			htmlSelectAdminBoss(true);
 			htmlSelectChooseBoss();
+                        htmlSelectChooseChannel();
 			$where = "1 = 1";
 		} else if ($boss) {
 			htmlSelectAdminBoss(false);
 			htmlSelectChooseBoss();
+                        htmlSelectChooseChannel();
 			$where = "1 = 1" /*"s.boss = $person_id"*/;
 		} else {
 			echo($name);
@@ -144,6 +176,10 @@ function htmlSelectAdminBoss($admin) {
 
 		if (isset($_GET["filter_boss"]) && $_GET["filter_boss"] != -1) {
 			$where .= "  and s.boss = " . mysql_escape_string($_GET["filter_boss"]);
+		}
+
+                if (isset($_GET["filter_channel"]) && $_GET["filter_channel"] != -1) {
+			$where .= "  and s.channel ='" . mysql_escape_string($_GET["filter_channel"]) . "'";
 		}
 
 		if (isset($shop)) {
