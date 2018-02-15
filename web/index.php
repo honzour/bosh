@@ -224,17 +224,33 @@ Nahráno od <INPUT type = "text" name = "datefrom" value="<?php if (isset($datef
 ?>
 <P>
 <?php
-				echo("<H3> obrázek " . $row[0] . "</H3>\n");
-		        echo("obchod: " . htmlspecialchars($row[6]) . "<BR><BR>\n");
-		        echo("poznámka Bosch: " . htmlspecialchars($row[2]) . "<BR><BR>\n");
-		        echo("poznámka konkurence: " . htmlspecialchars($row[3]) . "<BR><BR>\n");
-		        echo("tourplan: " . ($row[4] ? "ano" : "ne") . "<BR><BR>\n");
-		        echo("objednávka: " . ($row[5] ? "ano" : "ne") . "<BR><BR>\n");
-		        echo("čas: " . htmlspecialchars($row[7]) . "<BR><BR>\n");
-		        echo("z webu: " . ($row[8] == NULL ? "nevíme" : ($row[8] ? "ano" : "ne")) . "<BR><BR>\n");
-		        echo("nahrál: " . ($row[9] == NULL ? "nevíme" : $row[9]) . "<BR><BR>\n");
-				echo("<IMG src=\"data:image/png;base64,". base64_encode($row[1]) ."\" alt=\"fotka\"><BR>\n");
-				echo("<A href=\"index.php?action=delete&amp;id=" . $row[0] ."\">smazat</A>\n<BR><BR>");
+		        echo("<B>" . htmlspecialchars($row[6]) . "</B>\n");
+?>
+<TABLE>
+	<TR>
+		<TD>
+<?php
+				$raw = $row[1];
+				echo("<A href=\"detail.php?id=" . $row[0] ."\"><IMG width=\"100\" src=\"data:image/png;base64,". base64_encode($raw) ."\" alt=\"fotka\"></A><BR>\n");
+?>
+		</TD>
+		<TD style="padding-left: 10px;">
+<?php
+		        echo("poznámka Bosch: " . htmlspecialchars($row[2]) . "<BR>\n");
+		        echo("poznámka konkurence: " . htmlspecialchars($row[3]) . "<BR>\n");
+		        echo("tourplan: " . ($row[4] ? "ano" : "ne") . ", ");
+		        echo("objednávka: " . ($row[5] ? "ano" : "ne") . ", ");
+		        echo("čas: " . htmlspecialchars($row[7]) . ", ");
+		        echo("z webu: " . ($row[8] == NULL ? "nevíme" : ($row[8] ? "ano" : "ne")) . ", ");
+		        echo("nahrál: " . ($row[9] == NULL ? "nevíme" : $row[9]) . "<BR>\n");
+?>
+
+		</TD>
+	</TR>			
+</TABLE>
+
+<?php
+				echo("<A href=\"index.php?action=delete&amp;id=" . $row[0] ."\">smazat</A>\n<BR>");
 ?>
 </P>
 <HR>
