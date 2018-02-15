@@ -6,6 +6,13 @@ function htmlHeader($title) {
 <HEAD>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <TITLE><?php echo($title);?></TITLE>
+<STYLE>
+html,body {
+-webkit-text-size-adjust:none;
+-moz-text-size-adjust: none;
+-ms-text-size-adjust: none;
+ }
+</STYLE>
 </HEAD>
 <BODY>
 <?php
